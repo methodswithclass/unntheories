@@ -1,26 +1,44 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { Component } from 'react';
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import {UIRouter, UIView} from '@uirouter/react';
+
+import ErrorBoundary from "./app/components/error/ErrorBoundary";
+
+import * as state from "./app/services/state.service";
+import * as u from "./app/services/utility.service";
+
+class App extends Component {
+
+
+  componentWillMount() {
+
+
+
+    // u.forceMobile();
+    console.log("check mobile app", u.checkMobile());
+  }
+
+  render() {
+    return (
+        <div className="absolute width height">
+			<ErrorBoundary>
+			<UIRouter plugins={state.plugins} states={state.states} config={state.configRouter}>
+
+				<div className="absolute width height cutoff museo">
+
+
+					<UIView/>
+
+				</div>
+			</UIRouter>
+			</ErrorBoundary>
+        </div>
+
+    );
+  }
 }
 
 export default App;
+
+
