@@ -14,7 +14,12 @@
     "node-sass": "^4.13.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-scripts": "3.4.1"
+    "react-scripts": "^4.0.0",
+    "webpack": "4.44.2"
+  },
+  "engine": {
+    "node": "^14.0.0",
+    "npm": "^7.0.0"
   },
   "scripts": {
     "start": "NODE_ENV=production node server.js",
@@ -35,5 +40,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "resolutions": {
+    "webpack": "4.44.2"
   }
 }
