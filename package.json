@@ -17,7 +17,7 @@
     "react-scripts": "^4.0.0",
     "webpack": "4.44.2"
   },
-  "engine": {
+  "engines": {
     "node": "^14.0.0",
     "npm": "^7.0.0"
   },
