@@ -20,11 +20,11 @@ var prod = {
 };
 
 export var env = function (_test) {
-  console.log(
-    'location',
-    window.location.href,
-    window.location.href == prod.url
-  );
+  // console.log(
+  //   'location',
+  //   window.location.href,
+  //   window.location.href == prod.url
+  // );
 
   return _test !== undefined
     ? _test
@@ -386,7 +386,7 @@ let filterBlogs = () => {
   blogs = allblogs.filter(function (blog, index, array) {
     var now = new Date();
 
-    console.log('fliter blogs', blog);
+    // console.log('fliter blogs', blog);
 
     // blog.meta.index = Math.floor(Math.random()*array.length);
 

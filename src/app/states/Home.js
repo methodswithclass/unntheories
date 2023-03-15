@@ -1,14 +1,9 @@
 import React, { Component } from 'react';
 
-import Blogbtn from '../../components/navbtn/Blogbtn';
-import Header from '../../components/header/Header';
-import Footer from '../../components/footer/Footer';
-
-// import * as views from "../../views/home.view.js";
-
-import * as u from '../../services/utility.service';
-// import * as state from "../services/state.service";
-import * as data from '../../services/data.service';
+import Blogbtn from '../components/navbtn/Blogbtn';
+import Header from '../components/header/Header';
+import Footer from '../components/footer/Footer';
+import * as data from '../services/data.service';
 
 let styles = {
   single: 'single',
@@ -82,11 +77,11 @@ class Home extends Component {
   }
 
   getGenres() {
-    console.log('blogs', data.getGenres());
+    // console.log('blogs', data.getGenres());
 
     var genres = data.getGenres().map(($genre, key) => {
       var genre = $genre[0];
-      console.log('genre', genre);
+      // console.log('genre', genre);
       let columnClass =
         this.state.display == styles.single
           ? 'width'

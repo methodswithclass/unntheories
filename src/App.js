@@ -1,44 +1,31 @@
-import React, { Component } from 'react';
-import './App.css';
+import React from 'react';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import ErrorBoundary from './app/components/error/ErrorBoundary';
+import './styles/index.scss';
+import Home from './app/states/Home';
+import Piece from './app/states/Piece';
 
-import {UIRouter, UIView} from '@uirouter/react';
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <Home />,
+    children: [
+      {
+        path: 'blogs/:blog',
+        element: <Piece />,
+      },
+    ],
+  },
+]);
 
-import ErrorBoundary from "./app/components/error/ErrorBoundary";
-
-import * as state from "./app/services/state.service";
-import * as u from "./app/services/utility.service";
-
-class App extends Component {
-
-
-  componentWillMount() {
-
-
-
-    // u.forceMobile();
-    console.log("check mobile app", u.checkMobile());
-  }
-
-  render() {
-    return (
-        <div className="absolute width height">
-			<ErrorBoundary>
-			<UIRouter plugins={state.plugins} states={state.states} config={state.configRouter}>
-
-				<div className="absolute width height cutoff museo">
-
-
-					<UIView/>
-
-				</div>
-			</UIRouter>
-			</ErrorBoundary>
-        </div>
-
-    );
-  }
-}
+const App = () => {
+  return (
+    <div className="museo">
+      <ErrorBoundary>
+        <RouterProvider router={router} />
+      </ErrorBoundary>
+    </div>
+  );
+};
 
 export default App;
-
-
