@@ -34,9 +34,9 @@ var port;
 
 if (process.env.PORT) {
   port = process.env.PORT;
-} else if (env == 'production') {
+} else if (env === 'production') {
   port = PORTS.heroku;
-} else if (env == 'development') {
+} else if (env === 'development') {
   port = PORTS.misc2;
 } else {
   port = PORTS.misc1;

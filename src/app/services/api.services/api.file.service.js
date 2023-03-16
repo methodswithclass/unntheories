@@ -9,7 +9,7 @@ export let getBlog = (url) => {
   let fileName = url.replace('files/', '');
   fileName = fileName.replace('.txt', '');
   return http.get({
-    url: '/api/file/' + fileName,
+    url: `/api/file/${fileName}`,
   });
 };
 
