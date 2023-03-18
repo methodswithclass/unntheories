@@ -2,7 +2,7 @@
   "name": "infrastructure",
   "version": "0.1.0",
   "bin": {
-    "cdk2": "bin/service.js"
+    "infrastructure": "bin/service.js"
   },
   "scripts": {
     "build": "tsc",

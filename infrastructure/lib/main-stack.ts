@@ -5,6 +5,7 @@ import {
   aws_lambda as lambda,
   aws_apigateway as apigateway,
   aws_dynamodb as dynamodb,
+  aws_iam as iam,
 } from 'aws-cdk-lib';
 import * as path from 'path';
 
@@ -17,6 +18,25 @@ export class BlogStack extends MStack {
     const listBlogsLambdaName = `${ENV}-blog-list`;
     const getBlogLambdaName = `${ENV}-blog-get`;
     const postBlogLambdaName = `${ENV}-blog-post`;
+    const tableName = `${ENV}-blogs-table`;
+
+    const getLambdaPolicy = new iam.PolicyStatement({
+      effect: iam.Effect.ALLOW,
+      resources: [`arn:aws:dynamodb:us-east-1:654627066109:table/${tableName}`],
+      actions: ['dynamodb:GetItem'],
+    });
+
+    const listLambdaPolicy = new iam.PolicyStatement({
+      effect: iam.Effect.ALLOW,
+      resources: [`arn:aws:dynamodb:us-east-1:654627066109:table/${tableName}`],
+      actions: ['dynamodb:Query'],
+    });
+
+    const postLambdaPolicy = new iam.PolicyStatement({
+      effect: iam.Effect.ALLOW,
+      resources: [`arn:aws:dynamodb:us-east-1:654627066109:table/${tableName}`],
+      actions: ['dynamodb:PutItem'],
+    });
 
     const blogApi = new apigateway.RestApi(this, 'api-blog', {});
     const itemsResource = blogApi.root.addResource('blogs');
@@ -34,6 +54,8 @@ export class BlogStack extends MStack {
       },
     });
 
+    listLambda.addToRolePolicy(listLambdaPolicy);
+
     itemsResource.addMethod(
       'GET',
       new apigateway.LambdaIntegration(listLambda)
@@ -49,6 +71,8 @@ export class BlogStack extends MStack {
       },
     });
 
+    getLambda.addToRolePolicy(getLambdaPolicy);
+
     const postLambda = new lambda.Function(this, postBlogLambdaName, {
       runtime: lambda.Runtime.NODEJS_14_X,
       functionName: postBlogLambdaName,
@@ -59,13 +83,13 @@ export class BlogStack extends MStack {
       },
     });
 
+    postLambda.addToRolePolicy(postLambdaPolicy);
+
     itemResource.addMethod('GET', new apigateway.LambdaIntegration(getLambda));
     itemResource.addMethod(
       'POST',
       new apigateway.LambdaIntegration(postLambda)
     );
-
-    const tableName = `${ENV}-blogs-table`;
 
     new dynamodb.Table(this, tableName, {
       partitionKey: { name: 'id', type: dynamodb.AttributeType.STRING },

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 
 import Blogbtn from '../components/navbtn/Blogbtn';
 import Header from '../components/header/Header';
@@ -24,119 +24,98 @@ let resetCounter = () => {
   }
 };
 
-class Home extends Component {
-  constructor(props) {
-    super(props);
+const Home = (props) => {
+  const [display, setDisplay] = useState(styles.single);
 
-    this.state = {
-      display: styles.single,
-    };
+  const columnClass =
+    display == styles.single ? 'width65 left10' : 'width90 left5';
 
-    this.getBlogButtons = this.getBlogButtons.bind(this);
-    this.getGenres = this.getGenres.bind(this);
-  }
+  const isActive = (type) => {
+    return type === display;
+  };
 
-  getBlogButtons(genre) {
-    if (genre[0]) {
-      let columnClass =
-        this.state.display == styles.single
-          ? 'width80 left20'
-          : 'width80 left10';
+  const change = (type) => {
+    increm();
+    setDisplay(type);
+  };
 
-      var blogButtons = data
-        .getBlogsByGenre(genre[0].meta.genre)
-        .map((blog, key) => {
-          if (blog) {
-            return (
-              <div key={key} className="relative width">
-                <div className={`relative ${columnClass}`}>
-                  <Blogbtn
-                    state={blog.meta.genre}
-                    blog={blog.meta.name}
-                  ></Blogbtn>
-                </div>
-              </div>
-            );
-          } else {
-            return (
-              <div key={key} className="relative width">
-                <div className="absolute center font-40">no blog</div>
-              </div>
-            );
-          }
-        });
-
-      return <div className="relative width">{blogButtons};</div>;
-    } else {
+  const getBlogButtons = (blogs) => {
+    if (!blogs || blogs.length === 0) {
       return (
         <div key="key0" className="relative width">
           <div className="absolute center font-40">no blog</div>
         </div>
       );
     }
-  }
 
-  getGenres() {
+    let columnClass =
+      display == styles.single ? 'width80 left20' : 'width80 left10';
+
+    var blogButtons = blogs.map((blog, key) => {
+      if (!blog) {
+        return (
+          <div key={key} className="relative width">
+            <div className="absolute center font-40">no blog</div>
+          </div>
+        );
+      }
+
+      return (
+        <div key={key} className="relative width">
+          <div className={`relative ${columnClass}`}>
+            <Blogbtn state={blog.genre} blog={blog.id}></Blogbtn>
+          </div>
+        </div>
+      );
+    });
+
+    return <div className="relative width">{blogButtons};</div>;
+  };
+
+  const getGenres = () => {
     // console.log('blogs', data.getGenres());
 
-    var genres = data.getGenres().map(($genre, key) => {
-      var genre = $genre[0];
-      // console.log('genre', genre);
-      let columnClass =
-        this.state.display == styles.single
+    var genres = data.getGenres().map((item, key) => {
+      const genre = item.genre;
+      const blogs = item.blogs;
+
+      const columnClass =
+        display == styles.single
           ? 'width'
           : 'width40 padding-h-50 inline cell-top';
-      let scrollClass =
-        this.state.display == styles.double
+      const scrollClass =
+        display == styles.double
           ? 'height-600 margin-bottom-100 border lowered scrollY scroll-vertical-dark-narrow'
           : '';
-      // flex flex-wrap flex-row flex-justify-space
-      // width40 padding-h-50 inline cell-top
+
       return (
         <div key={`${key}${changed}`} className={`relative ${columnClass}`}>
           <div className="relative height-80 width border-bottom">
-            <div className="absolute bottom0 font150-rem">
-              {genre[0].meta.genre.toUpperCase()}
-            </div>
+            <div className="absolute bottom0 font150-rem">{genre.title}</div>
           </div>
           <div className={`relative width ${scrollClass}`}>
-            <div className="relative width">{this.getBlogButtons(genre)}</div>
+            <div className="relative width">{getBlogButtons(blogs)}</div>
           </div>
         </div>
       );
     });
 
     return <div className="relative width">{genres}</div>;
-  }
+  };
 
-  render() {
-    // return views.Home();
-
-    let columnClass =
-      this.state.display == styles.single ? 'width65 left10' : 'width90 left5';
-    let isActive = (type) => {
-      return type == this.state.display;
-    };
-
-    let change = (type) => {
-      increm();
-      this.setState({ display: type });
-    };
-
-    return (
-      <div className="relative width height scrollY scroll-vertical-dark-narrow">
-        <Header button={{ isActive, change, styles }}></Header>
-        <div
-          key={`${this.state.display}${changed}`}
-          className={`relative white-back ${columnClass}`}
-          id="button-group"
-        >
-          <div className="relative width margin-v-50">{this.getGenres()}</div>
-        </div>
-        <Footer></Footer>
+  return (
+    <div className="relative width height scrollY scroll-vertical-dark-narrow">
+      <Header button={{ isActive, change, styles }}></Header>
+      <div
+        key={`${display}${changed}`}
+        className={`relative white-back ${columnClass}`}
+        id="button-group"
+      >
+        <div className="relative width margin-v-50">{getGenres()}</div>
       </div>
-    );
-  }
-}
+      <Footer></Footer>
+    </div>
+  );
+};
 
 export default Home;

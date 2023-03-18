@@ -1,14 +1,15 @@
 import blog from './models/blog.service';
 import * as file from './file.service';
 import * as shared from './shared.service';
+import moment from 'moment';
 
 var testOverride = false;
 
 var dev = {
   test: true,
   name: 'unnecessary-theories-dev',
-  url: 'https://unnecessarytheories-dev.herokuapp.com/',
-  // url:"localhost:3300",
+  // url: 'https://unnecessarytheories-dev.herokuapp.com/',
+  url: 'localhost:4801',
   id: '725062234262184',
 };
 
@@ -19,7 +20,7 @@ var prod = {
   id: '696572137111194',
 };
 
-export var env = function (_test) {
+export var env = (_test) => {
   // console.log(
   //   'location',
   //   window.location.href,
@@ -99,273 +100,250 @@ var allblogs = [];
 var blogs;
 
 var writeBlog;
+let input;
 
-writeBlog = new blog.Blog();
-writeBlog.setDate(new Date(2019, 3, 13, 6, 0, 0));
-writeBlog.setBy('Christopher Polito');
-writeBlog.setName('feast');
-writeBlog.setGenre(genres.nonFict);
-writeBlog.setShortTitle('the feast: an analysis');
-writeBlog.setLongTitle('Analysis of an allegory of heaven and hell');
-writeBlog.setShortTitleFont({ button: { d: 'font-30', m: 'font-30' } });
-writeBlog.setImage('img/thefeast');
-writeBlog.setFile('files/thefeast_one.txt');
-writeBlog.setPublished(published.feast);
-writeBlog.setTwitter(
-  'Heaven and Hell can be understoon in many ways, if at all, here is one'
-);
-writeBlog.setFacebook(env().url + genres.nonFict + '/feast');
-
-allblogs.push(writeBlog);
-
-writeBlog = null;
-
-writeBlog = new blog.Blog();
-writeBlog.setDate(new Date(2019, 0, 5, 6, 0, 0));
-writeBlog.setBy('Christopher Polito');
-writeBlog.setName('sexuality');
-writeBlog.setGenre(genres.nonFict);
-writeBlog.setShortTitle('on sexuality');
-writeBlog.setLongTitle('We need to talk about sex');
-writeBlog.setShortTitleFont({ button: { d: 'font-30', m: 'font-30' } });
-writeBlog.setImage('img/gender');
-writeBlog.setFile('files/sexuality.txt');
-writeBlog.setPublished(published.sexuality);
-writeBlog.setTwitter(
-  "Your genitalia doesn't matter. Just do your personality."
-);
-writeBlog.setFacebook(env().url + genres.nonFict + '/sexuality');
-
-allblogs.push(writeBlog);
-
-writeBlog = null;
-
-writeBlog = new blog.Blog();
-writeBlog.setDate(new Date(2016, 10, 15, 6, 0, 0));
-writeBlog.setBy('Christopher Polito');
-writeBlog.setName('contact');
-writeBlog.setGenre(genres.nonFict);
-writeBlog.setShortTitle('challenges with alien contact');
-writeBlog.setLongTitle('How evolution makes alien contact very improbable');
-writeBlog.setShortTitleFont({ button: { d: 'font-15', m: 'font-15' } });
-writeBlog.setImage('img/contact');
-writeBlog.setFile('files/alien-contact3.txt');
-writeBlog.setPublished(published.contact);
-writeBlog.setTwitter('Alien contact is probably not going to happen');
-writeBlog.setFacebook(env().url + genres.nonFict + '/contact');
-
-allblogs.push(writeBlog);
-
-writeBlog = null;
-
-writeBlog = new blog.Blog();
-writeBlog.setDate(new Date(2018, 2, 11, 12, 0, 0));
-writeBlog.setBy('Christopher Polito');
-writeBlog.setName('evolution');
-writeBlog.setGenre(genres.nonFict);
-writeBlog.setShortTitle("evolution and it's popular understanding");
-writeBlog.setLongTitle("There is no 'selection' in Evolution");
-writeBlog.setImage('img/evolution2');
-writeBlog.setFile('files/evolution.txt');
-writeBlog.setPublished(published.evolution);
-writeBlog.setTwitter("There's no 'selection' in Evolution.");
-writeBlog.setFacebook(env().url + genres.nonFict + '/evolution');
-
-allblogs.push(writeBlog);
-
-writeBlog = null;
-
-writeBlog = new blog.Blog();
-writeBlog.setDate(new Date(2018, 0, 23, 12, 0, 0));
-writeBlog.setBy('Christopher Polito');
-writeBlog.setName('extraterrestrial_life');
-writeBlog.setGenre(genres.nonFict);
-writeBlog.setShortTitle('influences on the search for intelligent alien life');
-writeBlog.setLongTitle(
-  'How ideas about aliens have been influenced by science fiction and the Drake Equation'
-);
-writeBlog.setImage('img/extraterrestrial-life5');
-writeBlog.setFile('files/extraterrestrial-life2.txt');
-writeBlog.setPublished(published.extraterrestrial_life);
-writeBlog.setTwitter(
-  "Aliens won't be anything like what science fiction often depicts"
-);
-writeBlog.setFacebook(env().url + genres.nonFict + '/extraterrestrial_life');
-
-allblogs.push(writeBlog);
-
-writeBlog = null;
-
-writeBlog = new blog.Blog();
-writeBlog.setDate(new Date(2016, 0, 7, 12, 0, 0));
-writeBlog.setBy('Christopher Polito');
-writeBlog.setName('intelligence');
-writeBlog.setGenre(genres.nonFict);
-writeBlog.setShortTitle('defining intelligence');
-writeBlog.setLongTitle(
-  "How can we, as humans, be so intelligent when we can't really define it?"
-);
-writeBlog.setImage('img/machine');
-writeBlog.setFile('files/intelligence2.txt');
-writeBlog.setPublished(published.intelligence);
-writeBlog.setTwitter(
-  "It's a good thing we can think up something as sophisticated as intelligence or we'd be in trouble"
-);
-writeBlog.setFacebook(env().url + genres.nonFict + '/intelligence');
-
-allblogs.push(writeBlog);
-
-writeBlog = null;
-
-writeBlog = new blog.Blog();
-writeBlog.setDate(new Date(2016, 7, 21, 6, 0, 0));
-writeBlog.setBy('Christopher Polito');
-writeBlog.setName('vase');
-writeBlog.setGenre(genres.poetry);
-writeBlog.setShortTitle('vase of the world');
-writeBlog.setLongTitle(
-  'Caution to you, when you create in order to relieve, you know not what you make'
-);
-writeBlog.setImage('img/cavemen');
-writeBlog.setFile('files/vaseoftheworld.txt');
-writeBlog.setPublished(published.vase);
-writeBlog.setTwitter(
-  'Be careful what you create, you know not what it can become.'
-);
-writeBlog.setFacebook(env().url + genres.nonFict + '/vase');
-
-allblogs.push(writeBlog);
-
-writeBlog = null;
-
-writeBlog = new blog.Blog();
-writeBlog.setDate(new Date(2016, 9, 1, 6, 0, 0));
-writeBlog.setBy('Christopher Polito');
-writeBlog.setName('online_dating');
-writeBlog.setGenre(genres.poetry);
-writeBlog.setShortTitle('online dating');
-writeBlog.setLongTitle(
-  'Online dating is not a fun activity, so I wrote some poetry about it.'
-);
-writeBlog.setImage('img/online-date');
-writeBlog.setFile('files/online-date.txt');
-writeBlog.setPublished(published.online_dating);
-writeBlog.setTwitter(
-  'Online dating is not a fun activity, so I wrote some poetry about it.'
-);
-writeBlog.setFacebook(env().url + genres.nonFict + '/online_dating');
-
-allblogs.push(writeBlog);
-
-writeBlog = null;
-
-writeBlog = new blog.Blog();
-writeBlog.setDate(new Date(2016, 9, 30, 6, 0, 0));
-writeBlog.setBy('Christopher Polito');
-writeBlog.setName('girl');
-writeBlog.setGenre(genres.poetry);
-writeBlog.setShortTitle('girl on the path');
-writeBlog.setLongTitle(
-  'I was lost in a world of my own thinking thoughts, then I came upon her, and she connected the dots.'
-);
-writeBlog.setImage('img/girl');
-writeBlog.setFile('files/girl_on_path.txt');
-writeBlog.setPublished(published.girl);
-writeBlog.setTwitter(
-  'I was lost in a world of my own thinking thoughts, then I came upon her, and she connected the dots.'
-);
-writeBlog.setFacebook(env().url + genres.nonFict + '/girl');
-
-allblogs.push(writeBlog);
-
-writeBlog = null;
-
-writeBlog = new blog.Blog();
-writeBlog.setDate(new Date(2016, 10, 16, 6, 0, 0));
-writeBlog.setBy('Christopher Polito');
-writeBlog.setName('perspective');
-writeBlog.setGenre(genres.poetry);
-writeBlog.setShortTitle('perspective');
-writeBlog.setLongTitle(
-  'For the stone and the mote, the grass is always greener...'
-);
-writeBlog.setImage('img/dust');
-writeBlog.setFile('files/mote.txt');
-writeBlog.setPublished(published.perspective);
-writeBlog.setTwitter(
-  'For the stone and the mote, the grass is always greener...'
-);
-writeBlog.setFacebook(env().url + genres.nonFict + '/perspective');
-
-allblogs.push(writeBlog);
-
-writeBlog = null;
-
-writeBlog = new blog.Blog();
-writeBlog.setDate(new Date(2015, 11, 22, 12, 0, 0));
-writeBlog.setBy('Christopher Polito');
-writeBlog.setName('prison');
-writeBlog.setGenre(genres.poetry);
-writeBlog.setShortTitle('the prison');
-writeBlog.setLongTitle(
-  'Even prisons with three walls are impossible to break free from'
-);
-writeBlog.setImage('img/prison');
-writeBlog.setFile('files/prison.txt');
-writeBlog.setPublished(published.prison);
-writeBlog.setTwitter(
-  "You're in a prison you can't see because you're distracted by all the writing on the wall"
-);
-writeBlog.setFacebook(env().url + genres.nonFict + '/prison');
-
-allblogs.push(writeBlog);
-
-writeBlog = null;
-
-writeBlog = new blog.Blog();
-writeBlog.setDate(new Date(2016, 5, 1, 6, 0, 0));
-writeBlog.setBy('Christopher Polito');
-writeBlog.setName('meaning_god');
-writeBlog.setGenre(genres.nonFict);
-writeBlog.setShortTitle('the meaning of god');
-writeBlog.setLongTitle(
-  "Whether God exists or not is the wrong question. Instead what is the 'meaning' of god?"
-);
-writeBlog.setImage('img/space');
-writeBlog.setFile('files/meaning_god1.txt');
-writeBlog.setPublished(published.meaning_god);
-writeBlog.setTwitter(
-  "Whether God exists or not is the wrong question, ask instead what is the 'meaning' of god"
-);
-writeBlog.setFacebook(env().url + genres.nonFict + '/meaning_god');
-
-allblogs.push(writeBlog);
-
-writeBlog = null;
-
-let fromFile = (value, index, array) => {
-  // value.meta.index = index;
-
-  file.process(value.meta.name, '/' + value.meta.file, function (blog) {
-    // console.log("file", value.meta.file, "blog", blog);
-
-    value.content = blog;
-  });
+input = {
+  date: new Date(2019, 3, 13, 6, 0, 0),
+  by: 'Christopher Polito',
+  name: 'feast',
+  genre: genres.nonFict,
+  title: 'the feast: an analysis',
+  description: 'Analysis of an allegory of heaven and hell',
+  image: 'img/thefeast',
+  file: 'files/thefeast_one.txt',
+  published: published.feast,
 };
 
-let fromApi = (value, index, array) => {
-  //console.log("debug api", value);
-  value.meta.index = index;
+writeBlog = new blog.Blog(input);
+allblogs.push(writeBlog);
 
-  file.getBlog({ blog: value }).then((blog) => {
-    value.content = blog;
+writeBlog = null;
+input = null;
+
+input = {
+  date: new Date(2019, 0, 5, 6, 0, 0),
+  by: 'Christopher Polito',
+  name: 'sexuality',
+  genre: genres.nonFict,
+  title: 'on sexuality',
+  description: 'We need to talk about sex',
+  image: 'img/gender',
+  file: 'files/sexuality.txt',
+  published: published.sexuality,
+};
+
+writeBlog = new blog.Blog(input);
+allblogs.push(writeBlog);
+
+writeBlog = null;
+input = null;
+
+input = {
+  date: new Date(2016, 10, 15, 6, 0, 0),
+  by: 'Christopher Polito',
+  name: 'contact',
+  genre: genres.nonFict,
+  title: 'challenges with alien contact',
+  description: 'How evolution makes alien contact very improbable',
+  image: 'img/contact',
+  file: 'files/alien-contact3.txt',
+  published: published.contact,
+};
+
+writeBlog = new blog.Blog(input);
+allblogs.push(writeBlog);
+
+writeBlog = null;
+input = null;
+
+input = {
+  date: new Date(2018, 2, 11, 12, 0, 0),
+  by: 'Christopher Polito',
+  name: 'evolution',
+  genre: genres.nonFict,
+  title: "evolution and it's popular understanding",
+  description: "There is no 'selection' in Evolution",
+  image: 'img/evolution2',
+  file: 'files/evolution.txt',
+  published: published.evolution,
+};
+
+writeBlog = new blog.Blog(input);
+allblogs.push(writeBlog);
+
+writeBlog = null;
+input = null;
+
+input = {
+  date: new Date(2018, 0, 23, 12, 0, 0),
+  by: 'Christopher Polito',
+  name: 'extraterrestrial_life',
+  genre: genres.nonFict,
+  title: 'influences on the search for intelligent alien life',
+  description:
+    'How ideas about aliens have been influenced by science fiction and the Drake Equation',
+  image: 'img/extraterrestrial-life5',
+  file: 'files/extraterrestrial-life2.txt',
+  published: published.extraterrestrial_life,
+};
+
+writeBlog = new blog.Blog(input);
+allblogs.push(writeBlog);
+
+writeBlog = null;
+input = null;
+
+input = {
+  date: new Date(2016, 0, 7, 12, 0, 0),
+  by: 'Christopher Polito',
+  name: 'intelligence',
+  genre: genres.nonFict,
+  title: 'defining intelligence',
+  description:
+    "How can we, as humans, be so intelligent when we can't really define it?",
+  image: 'img/machine',
+  file: 'files/intelligence2.txt',
+  published: published.intelligence,
+};
+
+writeBlog = new blog.Blog(input);
+allblogs.push(writeBlog);
+
+writeBlog = null;
+input = null;
+
+input = {
+  date: new Date(2016, 7, 21, 6, 0, 0),
+  by: 'Christopher Polito',
+  name: 'vase',
+  genre: genres.poetry,
+  title: 'vase of the world',
+  description:
+    'Caution to you, when you create in order to relieve, you know not what you make',
+  image: 'img/cavemen',
+  file: 'files/vaseoftheworld.txt',
+  published: published.vase,
+};
+
+writeBlog = new blog.Blog(input);
+allblogs.push(writeBlog);
+
+writeBlog = null;
+input = null;
+
+input = {
+  date: new Date(2016, 9, 1, 6, 0, 0),
+  by: 'Christopher Polito',
+  name: 'online_dating',
+  genre: genres.poetry,
+  title: 'online dating',
+  description:
+    'Online dating is not a fun activity, so I wrote some poetry about it.',
+  image: 'img/online-date',
+  file: 'files/online-date.txt',
+  published: published.online_dating,
+};
+
+writeBlog = new blog.Blog(input);
+allblogs.push(writeBlog);
+
+writeBlog = null;
+input = null;
+
+input = {
+  date: new Date(2016, 9, 30, 6, 0, 0),
+  by: 'Christopher Polito',
+  name: 'girl',
+  genre: genres.poetry,
+  title: 'girl on the path',
+  description:
+    'I was lost in a world of my own thinking thoughts, then I came upon her, and she connected the dots.',
+  image: 'img/girl',
+  file: 'files/girl_on_path.txt',
+  published: published.girl,
+};
+
+writeBlog = new blog.Blog(input);
+allblogs.push(writeBlog);
+
+writeBlog = null;
+input = null;
+
+input = {
+  date: new Date(2016, 10, 16, 6, 0, 0),
+  by: 'Christopher Polito',
+  name: 'perspective',
+  genre: genres.poetry,
+  title: 'perspective',
+  description: 'For the stone and the mote, the grass is always greener...',
+  image: 'img/dust',
+  file: 'files/mote.txt',
+  published: published.girl,
+};
+
+writeBlog = new blog.Blog(input);
+allblogs.push(writeBlog);
+
+writeBlog = null;
+input = null;
+
+input = {
+  date: new Date(2015, 11, 22, 12, 0, 0),
+  by: 'Christopher Polito',
+  name: 'prison',
+  genre: genres.poetry,
+  title: 'the prison',
+  description:
+    'Even prisons with three walls are impossible to break free from',
+  image: 'img/prison',
+  file: 'files/prison.txt',
+  published: published.prison,
+};
+
+writeBlog = new blog.Blog(input);
+allblogs.push(writeBlog);
+
+writeBlog = null;
+input = null;
+
+input = {
+  date: new Date(2016, 5, 1, 6, 0, 0),
+  by: 'Christopher Polito',
+  name: 'meaning_god',
+  genre: genres.nonFict,
+  title: 'the meaning of god',
+  description:
+    "Whether God exists or not is the wrong question. Instead what is the 'meaning' of god?",
+  image: 'img/space',
+  file: 'files/meaning_god1.txt',
+  published: published.meaning_god,
+};
+
+writeBlog = new blog.Blog(input);
+allblogs.push(writeBlog);
+
+writeBlog = null;
+input = null;
+
+let fromFile = (blog) => {
+  file.process(blog);
+};
+
+let fromApi = (blog) => {
+  file.getBlog({ blog }).then((blogObj) => {
+    blog.blog = blogObj;
   });
 };
 
 let getBlogsFromApi = () => {
-  blogs.forEach(function (value, index, array) {
-    fromApi(value, index, array);
-    //fromFile(value, index, array);
+  blogs.forEach((blog) => {
+    fromApi(blog);
+  });
+};
+
+const postBlogsToDB = () => {
+  allblogs.forEach((blog) => {
+    fromFile(blog);
   });
 };
 
@@ -377,34 +355,32 @@ let shuffle = (array) => {
 };
 
 let sortByDate = () => {
-  allblogs.sort(function (a, b) {
-    return b.meta.date.getTime() - a.meta.date.getTime();
+  allblogs.sort((a, b) => {
+    return moment(b.date).milliseconds() < moment(a.date).milliseconds()
+      ? -1
+      : 1;
   });
 };
 
 let filterBlogs = () => {
-  blogs = allblogs.filter(function (blog, index, array) {
-    var now = new Date();
-
-    // console.log('fliter blogs', blog);
-
-    // blog.meta.index = Math.floor(Math.random()*array.length);
+  blogs = allblogs.filter((blog) => {
+    var now = moment();
 
     return (
-      blog.meta.date.getTime() < now.getTime() &&
-      published[blog.meta.name] &&
+      moment(blog.date).milliseconds() < now.milliseconds() &&
+      published[blog.id] &&
       !published.none
     );
   });
-  // .sort((a, b) => a.meta.index - b.meta.index);
 
-  shuffle(blogs);
+  // shuffle(blogs);
 };
 
 filterBlogs();
 getBlogsFromApi();
+// postBlogsToDB();
 
-var resolveName = function (name) {
+var resolveName = (name) => {
   if (name == 'scale_time') {
     name = 'contact';
   }
@@ -419,19 +395,19 @@ export let getBlogFromApi = (blogData) => {
   // })
 };
 
-export var getBlogByIndex = function (index) {
+export var getBlogByIndex = (index) => {
   return blogs[index];
 };
 
-export var getIndexByName = function (name) {
+export var getIndexByName = (name) => {
   name = resolveName(name);
 
   console.log('get index by name', name);
 
   var indexA = -1;
 
-  blogs.map(function (value, index) {
-    if (value.meta.name == name) {
+  blogs.map((value, index) => {
+    if (value.id == name) {
       indexA = index;
     }
   });
@@ -441,22 +417,22 @@ export var getIndexByName = function (name) {
   return indexA;
 };
 
-var resolveIndex = function (index) {
+var resolveIndex = (index) => {
   if (index >= 0 && index < blogs.length) {
     return true;
   }
   return false;
 };
 
-export var getBlogByName = function (name) {
+export var getBlogByName = (name) => {
   if (name == 'home') {
     return home;
   }
 
   name = resolveName(name);
 
-  var blog = blogs.find(function (p) {
-    return p.meta.name == name;
+  var blog = blogs.find((p) => {
+    return p.id == name;
   });
 
   if (blog) return blog;
@@ -466,19 +442,19 @@ export var getBlogByName = function (name) {
   }
 };
 
-export var getBlogsByGenre = function (genre) {
-  return blogs.filter(function (blog, index, array) {
-    return blog.meta.genre == genre;
+export var getBlogsByGenre = (genre) => {
+  return blogs.filter((blog) => {
+    return blog.genre == genre;
   });
 };
 
-export var isBlog = function (name) {
+export var isBlog = (name) => {
   var index = getIndexByName(name);
 
   return resolveIndex(index);
 };
 
-export var isGenre = function (name) {
+export var isGenre = (name) => {
   for (var i in genres) {
     if (name == genres[i]) {
       return true;
@@ -488,7 +464,7 @@ export var isGenre = function (name) {
   return false;
 };
 
-export var getButtonPosition = function (index) {
+export var getButtonPosition = (index) => {
   var cols = blogs.length <= 3 ? 2 : 3;
   cols = 2;
   cols = shared.g.isMobile() ? 1 : cols;
@@ -506,13 +482,16 @@ export var getButtonPosition = function (index) {
   };
 };
 
-export var getGenres = function () {
+export var getGenres = () => {
   filterBlogs();
 
   return genres.genres
     .sort((a, b) => a.order - b.order)
     .map((genre) => {
       //console.log("debug genre", genre.id);
-      return [getBlogsByGenre(genre.id)];
+      return {
+        genre: genre,
+        blogs: getBlogsByGenre(genre.id),
+      };
     });
 };

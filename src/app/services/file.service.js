@@ -1,16 +1,13 @@
 import * as api from './api.service';
 
-var files = [];
-var blogs = [];
-
-var clean = function (string) {
+const clean = (string) => {
   return string
     .replace(/[‘’]/g, "'")
     .replace(/[“”]/g, "'")
     .replace(/(?!\.)(.)\1{2,}/g, '$1');
 };
 
-var make = function (string) {
+const make = (string) => {
   var section = [];
   var blog = [];
   var array = string.split(/\n\n/);
@@ -33,66 +30,42 @@ var make = function (string) {
     }
   }
 
-  blog[blog.length] = section;
+  blog.push(section);
 
   return blog;
 };
 
-export let getBlog = function (options) {
+export const getBlog = (options) => {
   // console.log("get api for blog", options.blog.meta.name);
 
   return api
-    .getBlog(options.blog.meta.file)
+    .getBlog(options.blog.file)
     .then((res) => {
       // console.log("data", options.blog.meta.name);
       return res.data.blog;
     })
     .then((data) => {
-      var blog = make(data);
-      //   console.log('debug blog', blog);
-      blogs[blogs.length] = blog;
-      return blog;
+      return make(clean(data));
     });
 };
 
-let postBlog = (name, blog) => {
+const postBlog = (name, blog) => {
   return api.postBlog(name, blog);
 };
 
-export var process = function (name, url, complete) {
-  console.log(url);
+export const process = (blog) => {
+  const url = `/${blog.file}`;
+  const name = blog.id;
 
-  // $http({url:url})
-  // .then(function (response) {
-  // 	var data = response.data;
-  // 	var cleanData = clean(data);
-  // 	files[files.length] = cleanData;
-  // 	return cleanData;
-  // })
-  // .then(function (data) {
-  // 	var blog = make(data);
-  // 	blogs[blogs.length] = blog;
-  // 	return blog;
-  // })
-  // .then(complete);
+  $.ajax(url).then((response) => {
+    blog.content = response;
+    delete blog.file;
 
-  $.ajax(url)
-    .then(function (response) {
-      var data = response;
+    postBlog(name, blog).then((res) => {
+      console.log('post blog', res.data);
+    });
 
-      postBlog(name, data).then((res) => {
-        console.log('post blog', res.data);
-      });
-
-      console.log('process data', response, data);
-      var cleanData = clean(data);
-      files[files.length] = cleanData;
-      return cleanData;
-    })
-    .then(function (data) {
-      var blog = make(data);
-      blogs[blogs.length] = blog;
-      return blog;
-    })
-    .then(complete);
+    console.log('process data', response, data);
+    return make(clean(response));
+  });
 };

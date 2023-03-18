@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Header from '../components/header/Header';
 import Footer from '../components/footer/Footer';
 import * as u from '../services/utility.service';
 import * as data from '../services/data.service';
 
-let ParagraphType = (props) => {
+const ParagraphType = (props) => {
   return (
     <div className="relative width">
       <div className="relative width font-15 line-height-30">{props.text}</div>
@@ -12,7 +12,7 @@ let ParagraphType = (props) => {
   );
 };
 
-let ListType = (props) => {
+const ListType = (props) => {
   return (
     <div className="relative width">
       <table className="relative width">
@@ -34,8 +34,8 @@ let ListType = (props) => {
   );
 };
 
-var ParagraphComponent = (props) => {
-  var getParaType = (paragraph) => {
+const ParagraphComponent = (props) => {
+  const getParaType = (paragraph) => {
     if (paragraph.para == 'para') {
       return <ParagraphType text={paragraph.text} />;
     } else if ((paragraph.para = 'list')) {
@@ -51,7 +51,7 @@ var ParagraphComponent = (props) => {
   );
 };
 
-var SectionComponent = (props) => {
+const SectionComponent = (props) => {
   let section = props.text;
 
   var allParagraphs = section.map((paragraph, index) => {
@@ -66,7 +66,7 @@ var SectionComponent = (props) => {
   );
 };
 
-var TextComponent = (props) => {
+const TextComponent = (props) => {
   // console.log("text", props.text);
   let sections = props.content;
 
@@ -81,77 +81,72 @@ var TextComponent = (props) => {
   );
 };
 
-let TitleComponent = (props) => {
-  var getDateString = function (date) {
-    // var date = blog.meta.date;
-    var year = date.getYear() + 1900;
+const TitleComponent = (props) => {
+  const getDateString = function (date) {
+    const [year, month, day] = date.split('-');
 
-    var getMonth = function () {
-      return u.getMonth(date.getMonth());
+    const getMonth = () => {
+      return u.getMonth(month);
     };
 
-    return getMonth() + ' ' + date.getDate() + ', ' + year;
+    return `${getMonth()} ${day}, ${year}`;
   };
 
-  let meta = props.content;
+  const { content: blog } = props;
 
-  let dateString = getDateString(meta.date);
+  const dateString = getDateString(blog.date);
 
   return (
     <div className="relative width font-bold">
       <div className="relative width padding-v-20">
-        <div className="relative width">{meta.by}</div>
+        <div className="relative width">{blog.by}</div>
 
         <div className="relative width">{dateString}</div>
       </div>
-      <div className="relative width padding-v-20">{meta.title.l.text}</div>
+      <div className="relative width padding-v-20">{blog.description}</div>
 
       <div className="relative width border-bottom"></div>
     </div>
   );
 };
 
-class Piece extends Component {
-  render() {
-    //return views.Piece(this.props);
+const Piece = (props) => {
+  const blog = data.getBlogByName(props.$stateParams.name);
 
-    let blog = data.getBlogByName(this.props.$stateParams.name);
+  let widths = {};
 
-    let widths = {};
+  if (u.checkMobile()) {
+    widths.body = 'width';
+  } else {
+    console.log('blog', blog);
 
-    if (u.checkMobile()) {
-      widths.body = 'width';
-    } else {
-      console.log('blog', blog);
+    widths.body = 'width60';
+  }
 
-      widths.body = 'width60';
-    }
+  return (
+    <div className="relative width height cutoffX scrollY scroll-vertical-dark-narrow">
+      <Header title={blog.title} img={blog.image}></Header>
+      <div className="relative width">
+        <div className="relative width white-back">
+          <div className="relative width padding-v-100">
+            <div className="relative width80 hcenter">
+              <div className="relative width padding-v-50">
+                <TitleComponent content={blog} />
+              </div>
 
-    return (
-      <div className="relative width height cutoffX scrollY scroll-vertical-dark-narrow">
-        <Header title={blog.meta.title.s.text} img={blog.meta.image}></Header>
-        <div className="relative width">
-          <div className="relative width white-back">
-            <div className="relative width padding-v-100">
-              <div className="relative width80 hcenter">
-                <div className="relative width padding-v-50">
-                  <TitleComponent content={blog.meta} />
-                </div>
-
-                <div className="relative width font-15 paddinv-v-50">
-                  <TextComponent content={blog.content} widths={widths} />
-                </div>
+              <div className="relative width font-15 paddinv-v-50">
+                <TextComponent content={blog.blog} widths={widths} />
               </div>
             </div>
           </div>
         </div>
-
-        <div className="relative width">
-          <Footer></Footer>
-        </div>
       </div>
-    );
-  }
-}
+
+      <div className="relative width">
+        <Footer></Footer>
+      </div>
+    </div>
+  );
+};
 
 export default Piece;

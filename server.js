@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 
 const app = express();
 
-const apiRoutes = require('./backend/routes/api.js');
+const apiRoutes = require('./backend/files/api.js');
 
 var PORTS = {
   heroku: 8080,

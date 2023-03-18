@@ -1,9 +1,10 @@
 import AWS from 'aws-sdk';
+import { response } from '../utils/response-util';
 
 const handler = async (event, context) => {
   console.log('debug event', event);
 
-  const db = AWS.DynamoDB({ region: 'us-east-1' });
+  const db = new AWS.DynamoDB({ region: 'us-east-1' });
 
   const { ENV } = process.env;
 
@@ -17,13 +18,21 @@ const handler = async (event, context) => {
         TableName: `${ENV}-blogs-table`,
         KeyConditions: {
           genre: {
-            AttributeValueList: [genre],
+            AttributeValueList: [{ S: genre }],
             ComparisonOperator: 'EQ',
           },
         },
       };
 
-      const blogs = await db.query(params).promise();
+      const blogs = await db
+        .query(params)
+        .promise()
+        .catch((error) => {
+          if (error.code === 'ResourceNotFoundException') {
+            return [];
+          }
+          throw error;
+        });
 
       return {
         genre,
@@ -40,7 +49,7 @@ const handler = async (event, context) => {
       };
     }, {});
 
-    return resultObj;
+    return response(resultObj);
   } catch (error) {
     console.error('error listing blogs', error.message);
     throw error;
