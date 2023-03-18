@@ -2,19 +2,19 @@ import React from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import ErrorBoundary from './app/components/error/ErrorBoundary';
 import './styles/index.scss';
-import Home from './app/states/Home';
-import Piece from './app/states/Piece';
+import Home, { loader as homeLoader } from './app/states/Home';
+import Piece, { loader as pieceLoader } from './app/states/Piece';
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <Home />,
-    children: [
-      {
-        path: 'blogs/:blog',
-        element: <Piece />,
-      },
-    ],
+    loader: homeLoader,
+  },
+  {
+    path: 'blogs/:blog',
+    element: <Piece />,
+    loader: pieceLoader,
   },
 ]);
 

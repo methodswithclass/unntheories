@@ -1,11 +1,10 @@
 import blog from './models/blog.service';
 import * as file from './file.service';
-import * as shared from './shared.service';
 import moment from 'moment';
 
-var testOverride = false;
+const testOverride = false;
 
-var dev = {
+const dev = {
   test: true,
   name: 'unnecessary-theories-dev',
   // url: 'https://unnecessarytheories-dev.herokuapp.com/',
@@ -13,14 +12,14 @@ var dev = {
   id: '725062234262184',
 };
 
-var prod = {
+const prod = {
   test: false,
   name: 'unnecessary-blog',
   url: 'https://www.unnecessarytheories.io/',
   id: '696572137111194',
 };
 
-export var env = (_test) => {
+export const env = (_test) => {
   // console.log(
   //   'location',
   //   window.location.href,
@@ -38,7 +37,7 @@ export var env = (_test) => {
     : dev;
 };
 
-var genres = {
+const genres = {
   genres: [
     {
       id: 'blogs',
@@ -57,18 +56,7 @@ var genres = {
   poetry: 'poetry',
 };
 
-var fonts = {
-  button: {
-    d: 'font-15',
-    m: 'font-30',
-  },
-  blog: {
-    d: 'font-50',
-    m: 'font-50',
-  },
-};
-
-var published = {
+const published = {
   none: false,
   prison: true,
   scale_time: false,
@@ -85,21 +73,15 @@ var published = {
   feast: false,
 };
 
-var home = {
-  meta: {
-    name: 'home',
-    title: 'unnecessary theories',
-    image: 'img/landscape',
-  },
-  share: {
-    description: "here are some theories, they're probably unnecessary",
-  },
+const home = {
+  id: 'home',
+  title: 'unnecessary theories',
+  image: 'img/landscape',
 };
 
-var allblogs = [];
-var blogs;
+let allblogs = [];
 
-var writeBlog;
+let writeBlog;
 let input;
 
 input = {
@@ -325,19 +307,13 @@ allblogs.push(writeBlog);
 writeBlog = null;
 input = null;
 
-let fromFile = (blog) => {
+const fromFile = (blog) => {
   file.process(blog);
 };
 
-let fromApi = (blog) => {
+const fromApi = (blog) => {
   file.getBlog({ blog }).then((blogObj) => {
     blog.blog = blogObj;
-  });
-};
-
-let getBlogsFromApi = () => {
-  blogs.forEach((blog) => {
-    fromApi(blog);
   });
 };
 
@@ -347,14 +323,14 @@ const postBlogsToDB = () => {
   });
 };
 
-let shuffle = (array) => {
+const shuffle = (array) => {
   for (let i = array.length - 1; i > 0; i--) {
     let j = Math.floor(Math.random() * (i + 1));
     [array[i], array[j]] = [array[j], array[i]];
   }
 };
 
-let sortByDate = () => {
+const sortByDate = () => {
   allblogs.sort((a, b) => {
     return moment(b.date).milliseconds() < moment(a.date).milliseconds()
       ? -1
@@ -362,8 +338,8 @@ let sortByDate = () => {
   });
 };
 
-let filterBlogs = () => {
-  blogs = allblogs.filter((blog) => {
+const filterBlogs = () => {
+  return allblogs.filter((blog) => {
     var now = moment();
 
     return (
@@ -372,15 +348,19 @@ let filterBlogs = () => {
       !published.none
     );
   });
-
-  // shuffle(blogs);
 };
 
-filterBlogs();
-getBlogsFromApi();
+const blogs = filterBlogs();
+// getBlogsFromApi();
 // postBlogsToDB();
 
-var resolveName = (name) => {
+const getBlogsFromApi = () => {
+  blogs.forEach((blog) => {
+    fromApi(blog);
+  });
+};
+
+const resolveName = (name) => {
   if (name == 'scale_time') {
     name = 'contact';
   }
@@ -388,107 +368,42 @@ var resolveName = (name) => {
   return name;
 };
 
-export let getBlogFromApi = (blogData) => {
-  // file.getBlog({blog:blogData})
-  // .then(blog => {
-  // 	value.content = blog;
-  // })
-};
-
-export var getBlogByIndex = (index) => {
-  return blogs[index];
-};
-
-export var getIndexByName = (name) => {
-  name = resolveName(name);
-
-  console.log('get index by name', name);
-
-  var indexA = -1;
-
-  blogs.map((value, index) => {
-    if (value.id == name) {
-      indexA = index;
-    }
-  });
-
-  console.log('get index by name', indexA);
-
-  return indexA;
-};
-
-var resolveIndex = (index) => {
-  if (index >= 0 && index < blogs.length) {
-    return true;
-  }
-  return false;
-};
-
-export var getBlogByName = (name) => {
-  if (name == 'home') {
+export const getBlogByName = async (name) => {
+  if (name === 'home') {
     return home;
   }
 
   name = resolveName(name);
 
-  var blog = blogs.find((p) => {
+  const blogRequest = blogs.find((p) => {
     return p.id == name;
   });
 
-  if (blog) return blog;
-  else {
-    console.log('invalid name');
+  if (!blogRequest) {
+    console.log('debug invalid name');
     return null;
   }
-};
 
-export var getBlogsByGenre = (genre) => {
-  return blogs.filter((blog) => {
-    return blog.genre == genre;
-  });
-};
+  const blogObj = await file.getBlog({ blog: blogRequest });
 
-export var isBlog = (name) => {
-  var index = getIndexByName(name);
-
-  return resolveIndex(index);
-};
-
-export var isGenre = (name) => {
-  for (var i in genres) {
-    if (name == genres[i]) {
-      return true;
-    }
+  if (!blogObj) {
+    console.log('debug invalid request');
+    return null;
   }
 
-  return false;
+  return { ...blogRequest, blog: blogObj };
 };
 
-export var getButtonPosition = (index) => {
-  var cols = blogs.length <= 3 ? 2 : 3;
-  cols = 2;
-  cols = shared.g.isMobile() ? 1 : cols;
-  var rowsFrac = blogs.length / cols;
-  // var rows = rowsFrac % cols == 0 ? rowsFrac : rowsFrac + 1;
-  var rows = rowsFrac + 1;
-
-  //console.log("rows " + rows);
-
-  return {
-    x: index % cols,
-    y: Math.floor(index / cols),
-    cols: cols,
-    rows: rows,
-  };
+export const getBlogsByGenre = (genre) => {
+  return blogs.filter((blog) => blog.genre === genre);
 };
 
-export var getGenres = () => {
+export const getGenres = () => {
   filterBlogs();
 
   return genres.genres
-    .sort((a, b) => a.order - b.order)
+    .sort((a, b) => (b.order < a.order ? -1 : 1))
     .map((genre) => {
-      //console.log("debug genre", genre.id);
       return {
         genre: genre,
         blogs: getBlogsByGenre(genre.id),

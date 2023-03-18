@@ -45,6 +45,7 @@ export const getBlog = (options) => {
       return res.data.blog;
     })
     .then((data) => {
+      options.blog.content = data;
       return make(clean(data));
     });
 };
