@@ -134,7 +134,7 @@ const Piece = () => {
           <div className="relative width padding-v-100">
             <div
               className={`relative width80 ${
-                isMobile ? 'font-30 line-height-70' : 'font-15 line-height-30'
+                isMobile ? 'font-20 line-height-60' : 'font-15 line-height-30'
               } hcenter`}
             >
               <div className="relative width padding-v-50">
