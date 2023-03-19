@@ -15,7 +15,7 @@ const ParagraphType = (props) => {
   const { text } = props;
   return (
     <div className="relative width">
-      <div className="relative width font-15 line-height-30">{text}</div>
+      <div className="relative width">{text}</div>
     </div>
   );
 };
@@ -33,9 +33,7 @@ const ListType = (props) => {
                 <div className="absolute center">&bull;</div>
               </div>
             </td>
-            <td className="relative width75 font-15 line-height-30 table-cell cell-top">
-              {text}
-            </td>
+            <td className="relative width75 table-cell cell-top">{text}</td>
           </tr>
         </tbody>
       </table>
@@ -77,16 +75,14 @@ const SectionComponent = (props) => {
 };
 
 const TextComponent = (props) => {
-  const { content: sections } = props;
+  const { content: sections, widths } = props;
 
   const sectionElements = sections.map((section, index) => {
     return <SectionComponent key={index} text={section} />;
   });
 
   return (
-    <div className={`relative hcenter ${props.widths.body}`}>
-      {sectionElements}
-    </div>
+    <div className={`relative hcenter ${widths.body}`}>{sectionElements}</div>
   );
 };
 
@@ -122,30 +118,26 @@ const TitleComponent = (props) => {
 const Piece = () => {
   const blog = useLoaderData();
 
-  let widths = {};
+  const isMobile = u.checkMobile();
 
-  if (u.checkMobile()) {
-    widths.body = 'width';
-  } else {
-    widths.body = 'width60';
-  }
+  const widths = { body: isMobile ? 'width' : 'width60' };
 
   if (!blog?.blog) {
     return null;
   }
 
   return (
-    <div className="relative width height cutoffX scrollY scroll-vertical-dark-narrow">
+    <div className="relative width height cutoffX">
       <Header title={blog.title} img={blog.image} state={blog.id}></Header>
       <div className="relative width">
         <div className="relative width white-back">
           <div className="relative width padding-v-100">
-            <div className="relative width80 hcenter">
+            <div className="relative width80 font-15 line-height-30 hcenter">
               <div className="relative width padding-v-50">
                 <TitleComponent content={blog} />
               </div>
 
-              <div className="relative width font-15 paddinv-v-50">
+              <div className="relative width paddinv-v-50">
                 <TextComponent content={blog.blog} widths={widths} />
               </div>
             </div>

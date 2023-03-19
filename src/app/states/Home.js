@@ -4,6 +4,7 @@ import Blogbtn from '../components/navbtn/Blogbtn';
 import Header from '../components/header/Header';
 import Footer from '../components/footer/Footer';
 import * as data from '../services/data.service';
+import * as u from '../services/utility.service';
 
 const styles = {
   single: 'single',
@@ -34,8 +35,13 @@ const Home = (props) => {
 
   const [display, setDisplay] = useState(styles.single);
 
+  const isMobile = u.checkMobile();
+
   const mainColumnClass =
     display == styles.single ? 'width65 left10' : 'width90 left5';
+
+  const mainColumnClassMobile =
+    display == styles.single ? 'width80 left10' : 'width90 left5';
 
   const isActive = (type) => {
     return type === display;
@@ -58,6 +64,9 @@ const Home = (props) => {
     const columnClass =
       display == styles.single ? 'width80 left20' : 'width80 left10';
 
+    const columnClassMobile =
+      display == styles.single ? 'width90 left5' : 'width80 left10';
+
     const blogButtons = blogs.map((blog, key) => {
       if (!blog) {
         return (
@@ -69,7 +78,9 @@ const Home = (props) => {
 
       return (
         <div key={key} className="relative width">
-          <div className={`relative ${columnClass}`}>
+          <div
+            className={`relative ${isMobile ? columnClassMobile : columnClass}`}
+          >
             <Blogbtn blog={blog}></Blogbtn>
           </div>
         </div>
@@ -119,11 +130,13 @@ const Home = (props) => {
   };
 
   return (
-    <div className="relative width height scrollY scroll-vertical-dark-narrow">
+    <div className="relative width height">
       <Header button={{ isActive, change, styles }} state="home"></Header>
       <div
         key={`${display}${changed}`}
-        className={`relative white-back ${mainColumnClass}`}
+        className={`relative white-back ${
+          isMobile ? mainColumnClassMobile : mainColumnClass
+        }`}
         id="button-group"
       >
         <div className="relative width margin-v-50">{getGenres(genres)}</div>
