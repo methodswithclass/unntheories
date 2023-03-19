@@ -1,37 +1,14 @@
-import React, { Component } from 'react';
+import React from 'react';
+import { Link } from 'react-router-dom';
 
-import { UISref, UISrefActive } from '@uirouter/react';
-
-
-// import '../../../assets/css/classes.css';
-
-
-import * as h from "../../services/history.service";
-
-var getIndex = function () {
-
-	h.changePreviousIndex(h.getName());
-}
-
-class Navbtn extends Component {
-
-    render() {
-        return (
-
-
-            <UISrefActive class="active">
-                <UISref to={this.props.state}>
-
-                    <div className={"absolute width height rounded10 pointer " + this.props.class} onClick={getIndex}>
-                        <div className="absolute center">{this.props.name}</div>
-                    </div>
-
-                </UISref>
-            </UISrefActive>
-
-
-        );
-    }
-}
+const Navbtn = (props) => {
+  return (
+    <Link to={props.to}>
+      <div className={'absolute width height rounded10 pointer ' + props.class}>
+        <div className="absolute center">{props.name}</div>
+      </div>
+    </Link>
+  );
+};
 
 export default Navbtn;

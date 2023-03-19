@@ -1,115 +1,82 @@
+import * as api from './api.service';
+import axios from 'axios';
 
-import * as api from "./api.service";
-import * as u from "./utility.service";
+const clean = (string) => {
+  return string
+    .replace(/[‘’]/g, "'")
+    .replace(/[“”]/g, "'")
+    .replace(/(?!\.)(.)\1{2,}/g, '$1');
+};
 
-var $ = u.jquery();
+const make = (string) => {
+  var section = [];
+  var blog = [];
+  var array = string.split(/\n\n/);
+  // console.log(string, array);
+  var j = 0;
+  var k = 0;
+  var list = false;
 
+  for (var i in array) {
+    // console.log(array[i], array[i].match(/\./));
+    if (array[i].match(/\./) && array[i].match(/\./).index == 0) {
+      blog[k++] = section;
 
-var files = [];
-var blogs = [];
+      section = [];
+      j = 0;
+    } else if (array[i] == '#') {
+      list = !list;
+    } else {
+      section[j++] = { para: list ? 'list' : 'para', text: array[i] };
+    }
+  }
 
-var clean = function (string) {
+  blog.push(section);
 
-		return string.replace(/[‘’]/g, "\'").replace(/[“”]/g, "\'").replace(/(?!\.)(.)\1{2,}/g, "$1");
-	}
+  return blog;
+};
 
-var make = function (string) {
+export const getBlog = (options) => {
+  // console.log("get api for blog", options.blog.meta.name);
 
-	var section = [];
-	var blog = [];
-	var array = string.split(/\n\n/);
-	// console.log(string, array);
-	var j = 0;
-	var k = 0;
-	var list = false;
+  return api
+    .getBlog(options.blog.file)
+    .then((res) => {
+      // console.log("data", options.blog.meta.name);
+      return res.data.blog;
+    })
+    .then((data) => {
+      options.blog.content = data;
+      return make(clean(data));
+    });
+};
 
-	for (var i in array) {
-		// console.log(array[i], array[i].match(/\./));
-		if (array[i].match(/\./) && array[i].match(/\./).index == 0) {
+export const makeBlog = (blog) => {
+  const { content } = blog;
+  const blogObj = make(clean(content));
+  blog.blog = blogObj;
+  return blog;
+};
 
-			blog[k++] = section;
+const postBlog = (name, blog) => {
+  return api.postBlog(name, blog);
+};
 
-			section = [];
-			j = 0;
-		}
-		else if (array[i] == "#") {
-			list = !list;
-		}
-		else {
-			section[j++] = {para:list ? "list" : "para", text:array[i]};
-		}
-	}
+export const process = (blog) => {
+  const url = `/api/${blog.file}`;
+  const name = blog.id;
 
-	blog[blog.length] = section;
+  axios({
+    method: 'get',
+    url,
+  }).then((response) => {
+    // console.log('debug res', response);
+    blog.content = response.data.blog;
+    delete blog.file;
+    delete blog.published;
 
-	return blog;
-}
-
-export let getBlog = function (options) {
-
-	// console.log("get api for blog", options.blog.meta.name);
-
-	return api.getBlog(options.blog.meta.file)
-	.then((res) => {
-		// console.log("data", options.blog.meta.name);
-		return res.data.blog;
-	})
-	.then(data => {
-
-		var blog = make(data);
-		console.log("debug blog", blog);
-		blogs[blogs.length] = blog;
-		return blog;
-
-	})
-}
-
-let postBlog = (name, blog) => {
-
-	return api.postBlog(name, blog);
-}
-
-export var process = function (name, url, complete) {
-
-	console.log(url);
-
-	// $http({url:url})
-	// .then(function (response) {
-	// 	var data = response.data;
-	// 	var cleanData = clean(data);
-	// 	files[files.length] = cleanData;
-	// 	return cleanData;
-	// })
-	// .then(function (data) {
-	// 	var blog = make(data);
-	// 	blogs[blogs.length] = blog;
-	// 	return blog;
-	// })
-	// .then(complete);
-
-
-
-
-	$.ajax(url)
-	.then(function (response) {
-		var data = response;
-
-		postBlog(name, data)
-		.then(res => {
-
-			console.log("post blog", res.data);
-		})
-
-		console.log("process data", response, data);
-		var cleanData = clean(data);
-		files[files.length] = cleanData;
-		return cleanData;
-	})
-	.then(function (data) {
-		var blog = make(data);
-		blogs[blogs.length] = blog;
-		return blog;
-	})
-	.then(complete);
-
-}
+    postBlog(name, blog).then((res) => {
+      console.log('post blog', res.data);
+    });
+  });
+};
