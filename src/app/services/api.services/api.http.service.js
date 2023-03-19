@@ -3,18 +3,26 @@ import * as http from './api.client';
 export let postBlog = (name, blog) => {
   return http.post({
     url: `/api/blogs/${name}`,
-    data: blog,
+    data: { blog },
   });
 };
 
 export let getBlog = (blog) => {
-  return http.get({
-    url: `/api/blogs/${blog}`,
-  });
+  return http
+    .get({
+      url: `/api/blogs/${blog}`,
+    })
+    .then((res) => {
+      return res.data.blog;
+    });
 };
 
 export let getAllBlogs = () => {
-  return http.get({
-    url: '/api/blogs',
-  });
+  return http
+    .get({
+      url: '/api/blogs',
+    })
+    .then((res) => {
+      return res.data.blogs;
+    });
 };

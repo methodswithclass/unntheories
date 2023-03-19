@@ -4,7 +4,7 @@ import { response } from '../utils/response-util';
 const handler = async (event, context) => {
   console.log('debug event', event);
 
-  const db = new AWS.DynamoDB({ region: 'us-east-1' });
+  const db = new AWS.DynamoDB.DocumentClient();
 
   const { ENV } = process.env;
   const { pathParameters = {} } = event;
@@ -13,24 +13,21 @@ const handler = async (event, context) => {
 
   const params = {
     TableName: `${ENV}-blogs-table`,
-    Key: {
-      id: { S: blog },
+    ScanFilter: {
+      id: {
+        AttributeValueList: [blog],
+        ComparisonOperator: 'EQ',
+      },
     },
   };
 
   try {
-    const results = await db
-      .getItem(params)
-      .promise()
-      .catch((error) => {
-        if (error.code === 'ResourceNotFoundException') {
-          return {};
-        }
-        throw error;
-      });
+    const results = await db.scan(params).promise();
+    const { Items: blogs } = results;
+    const [result = {}] = blogs;
 
     console.log('debug success', results);
-    return response(results);
+    return response(result);
   } catch (error) {
     console.error('error getting blog', blog, error.message);
     throw error;

@@ -1,15 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import * as data from '../../services/data.service';
 
 const Blogbtn = (props) => {
   const { blog } = props;
-  // const [blog, setBlog] = useState(null);
-
-  // useEffect(async () => {
-  //   const blog = await getBlog(id);
-  //   setBlog(blog);
-  // }, [id]);
 
   return (
     <Link to={`blogs/${blog.id}`}>

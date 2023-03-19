@@ -4,7 +4,7 @@ import { response } from '../utils/response-util';
 const handler = async (event, context) => {
   console.log('debug event', event);
 
-  const db = new AWS.DynamoDB({ region: 'us-east-1' });
+  const db = new AWS.DynamoDB.DocumentClient();
 
   const { ENV } = process.env;
 
@@ -16,23 +16,16 @@ const handler = async (event, context) => {
 
       const params = {
         TableName: `${ENV}-blogs-table`,
-        KeyConditions: {
+        ScanFilter: {
           genre: {
-            AttributeValueList: [{ S: genre }],
+            AttributeValueList: [genre],
             ComparisonOperator: 'EQ',
           },
         },
       };
 
-      const blogs = await db
-        .query(params)
-        .promise()
-        .catch((error) => {
-          if (error.code === 'ResourceNotFoundException') {
-            return [];
-          }
-          throw error;
-        });
+      const result = await db.scan(params).promise();
+      const { Items: blogs } = result;
 
       return {
         genre,

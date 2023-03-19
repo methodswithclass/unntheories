@@ -12,14 +12,16 @@ export const loader = async ({ params }) => {
 };
 
 const ParagraphType = (props) => {
+  const { text } = props;
   return (
     <div className="relative width">
-      <div className="relative width font-15 line-height-30">{props.text}</div>
+      <div className="relative width font-15 line-height-30">{text}</div>
     </div>
   );
 };
 
 const ListType = (props) => {
+  const { text } = props;
   return (
     <div className="relative width">
       <table className="relative width">
@@ -32,7 +34,7 @@ const ListType = (props) => {
               </div>
             </td>
             <td className="relative width75 font-15 line-height-30 table-cell cell-top">
-              {props.text}
+              {text}
             </td>
           </tr>
         </tbody>
@@ -42,7 +44,8 @@ const ListType = (props) => {
 };
 
 const ParagraphComponent = (props) => {
-  const getParaType = (paragraph) => {
+  const { paragraph } = props;
+  const getParaType = () => {
     if (paragraph.para == 'para') {
       return <ParagraphType text={paragraph.text} />;
     } else if ((paragraph.para = 'list')) {
@@ -52,16 +55,16 @@ const ParagraphComponent = (props) => {
 
   return (
     <div className="relative width">
-      {getParaType(props.paragraph)}
+      {getParaType()}
       <div className="relative width height-30 white-back"></div>
     </div>
   );
 };
 
 const SectionComponent = (props) => {
-  let section = props.text;
+  const { text: section } = props;
 
-  var allParagraphs = section.map((paragraph, index) => {
+  const allParagraphs = section.map((paragraph, index) => {
     return <ParagraphComponent key={index} paragraph={paragraph} />;
   });
 
@@ -74,10 +77,9 @@ const SectionComponent = (props) => {
 };
 
 const TextComponent = (props) => {
-  console.log('text', props);
-  let sections = props.content;
+  const { content: sections } = props;
 
-  var sectionElements = sections.map((section, index) => {
+  const sectionElements = sections.map((section, index) => {
     return <SectionComponent key={index} text={section} />;
   });
 
@@ -89,7 +91,7 @@ const TextComponent = (props) => {
 };
 
 const TitleComponent = (props) => {
-  const getDateString = function (date) {
+  const getDateString = (date) => {
     const [year, month, day] = date.split('-');
 
     const getMonth = () => {
@@ -119,8 +121,6 @@ const TitleComponent = (props) => {
 
 const Piece = () => {
   const blog = useLoaderData();
-
-  console.log('blog', blog, blog.blog);
 
   let widths = {};
 

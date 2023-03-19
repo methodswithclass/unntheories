@@ -1,4 +1,4 @@
-import * as api from './api.services/api.file.service';
+import * as api from './api.services/api.http.service';
 
 export let postBlog = (name, blog) => {
   return api.postBlog(name, blog);

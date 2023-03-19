@@ -1,4 +1,5 @@
 import * as api from './api.service';
+import axios from 'axios';
 
 const clean = (string) => {
   return string
@@ -50,23 +51,32 @@ export const getBlog = (options) => {
     });
 };
 
+export const makeBlog = (blog) => {
+  const { content } = blog;
+  const blogObj = make(clean(content));
+  blog.blog = blogObj;
+  return blog;
+};
+
 const postBlog = (name, blog) => {
   return api.postBlog(name, blog);
 };
 
 export const process = (blog) => {
-  const url = `/${blog.file}`;
+  const url = `/api/${blog.file}`;
   const name = blog.id;
 
-  $.ajax(url).then((response) => {
-    blog.content = response;
+  axios({
+    method: 'get',
+    url,
+  }).then((response) => {
+    // console.log('debug res', response);
+    blog.content = response.data.blog;
     delete blog.file;
+    delete blog.published;
 
     postBlog(name, blog).then((res) => {
       console.log('post blog', res.data);
     });
-
-    console.log('process data', response, data);
-    return make(clean(response));
   });
 };

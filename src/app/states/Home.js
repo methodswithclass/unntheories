@@ -24,7 +24,7 @@ const resetCounter = () => {
 };
 
 export const loader = async () => {
-  const blogs = await data.getGenres();
+  const blogs = await data.getAllBlogs();
 
   return blogs;
 };

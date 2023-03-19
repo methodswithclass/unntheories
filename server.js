@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 
 const app = express();
 
-const apiRoutes = require('./backend/files/api.js');
+const apiRoutes = require('./backend/routes/api.js');
 
 var PORTS = {
   heroku: 8080,
@@ -23,10 +23,7 @@ app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
 app.use('/api', apiRoutes);
 
 app.use('/img', express.static(path.join(__dirname, 'asset/img')));
-app.use('/home', express.static(path.join(__dirname, 'build')));
-app.use('/blogs/*', express.static(path.join(__dirname, 'build')));
-app.use('/poetry/*', express.static(path.join(__dirname, 'build')));
-
+app.use('/blogs/:blog', express.static(path.join(__dirname, 'build')));
 app.use('/', express.static(path.join(__dirname, 'build')));
 
 var env = process.env.NODE_ENV;

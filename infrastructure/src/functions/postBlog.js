@@ -4,11 +4,17 @@ import { response } from '../utils/response-util';
 const handler = async (event, context) => {
   console.log('debug event', event);
 
-  const db = new AWS.DynamoDB({ region: 'us-east-1' });
+  const db = new AWS.DynamoDB.DocumentClient();
 
   const { ENV } = process.env;
-  const { body = {} } = event;
-  const { blog } = body;
+  const { body = '' } = event;
+  let parsed = {};
+  try {
+    parsed = JSON.parse(body);
+  } catch (error) {
+    console.error('debug error parsing body', body);
+  }
+  const { blog } = parsed;
 
   const params = {
     TableName: `${ENV}-blogs-table`,
@@ -16,7 +22,7 @@ const handler = async (event, context) => {
   };
 
   try {
-    const results = await db.putItem(params).promise();
+    const results = await db.put(params).promise();
 
     console.log('debug success', results);
     return response(results);

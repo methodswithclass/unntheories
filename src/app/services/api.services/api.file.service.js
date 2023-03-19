@@ -6,7 +6,7 @@ export let postBlog = (name, blog) => {
 
 export let getBlog = (url) => {
   //   console.log('url', url);
-  let fileName = url.replace('files/', '');
+  let fileName = url.replace('file/', '');
   fileName = fileName.replace('.txt', '');
   return http.get({
     url: `/api/file/${fileName}`,

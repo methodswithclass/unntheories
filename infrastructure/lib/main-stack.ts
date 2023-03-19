@@ -6,6 +6,7 @@ import {
   aws_apigateway as apigateway,
   aws_dynamodb as dynamodb,
   aws_iam as iam,
+  Duration,
 } from 'aws-cdk-lib';
 import * as path from 'path';
 
@@ -15,6 +16,7 @@ export class BlogStack extends MStack {
 
     const { ENV } = this.mEnvironment;
 
+    const apiName = `${ENV}-api-blog`;
     const listBlogsLambdaName = `${ENV}-blog-list`;
     const getBlogLambdaName = `${ENV}-blog-get`;
     const postBlogLambdaName = `${ENV}-blog-post`;
@@ -23,13 +25,13 @@ export class BlogStack extends MStack {
     const getLambdaPolicy = new iam.PolicyStatement({
       effect: iam.Effect.ALLOW,
       resources: [`arn:aws:dynamodb:us-east-1:654627066109:table/${tableName}`],
-      actions: ['dynamodb:GetItem'],
+      actions: ['dynamodb:Scan'],
     });
 
     const listLambdaPolicy = new iam.PolicyStatement({
       effect: iam.Effect.ALLOW,
       resources: [`arn:aws:dynamodb:us-east-1:654627066109:table/${tableName}`],
-      actions: ['dynamodb:Query'],
+      actions: ['dynamodb:Scan'],
     });
 
     const postLambdaPolicy = new iam.PolicyStatement({
@@ -38,7 +40,7 @@ export class BlogStack extends MStack {
       actions: ['dynamodb:PutItem'],
     });
 
-    const blogApi = new apigateway.RestApi(this, 'api-blog', {});
+    const blogApi = new apigateway.RestApi(this, apiName, {});
     const itemsResource = blogApi.root.addResource('blogs');
     const itemResource = itemsResource.addResource('{blog}');
 
@@ -49,6 +51,7 @@ export class BlogStack extends MStack {
       code: lambda.Code.fromAsset(
         path.resolve(__dirname, '../build/listBlogs')
       ),
+      timeout: Duration.seconds(30),
       environment: {
         ENV,
       },
@@ -66,6 +69,7 @@ export class BlogStack extends MStack {
       functionName: getBlogLambdaName,
       handler: `getBlog.handler`,
       code: lambda.Code.fromAsset(path.resolve(__dirname, '../build/getBlog')),
+      timeout: Duration.seconds(30),
       environment: {
         ENV,
       },
@@ -73,25 +77,28 @@ export class BlogStack extends MStack {
 
     getLambda.addToRolePolicy(getLambdaPolicy);
 
-    const postLambda = new lambda.Function(this, postBlogLambdaName, {
-      runtime: lambda.Runtime.NODEJS_14_X,
-      functionName: postBlogLambdaName,
-      handler: `postBlog.handler`,
-      code: lambda.Code.fromAsset(path.resolve(__dirname, '../build/postBlog')),
-      environment: {
-        ENV,
-      },
-    });
-
-    postLambda.addToRolePolicy(postLambdaPolicy);
-
     itemResource.addMethod('GET', new apigateway.LambdaIntegration(getLambda));
-    itemResource.addMethod(
-      'POST',
-      new apigateway.LambdaIntegration(postLambda)
-    );
+
+    // const postLambda = new lambda.Function(this, postBlogLambdaName, {
+    //   runtime: lambda.Runtime.NODEJS_14_X,
+    //   functionName: postBlogLambdaName,
+    //   handler: `postBlog.handler`,
+    //   code: lambda.Code.fromAsset(path.resolve(__dirname, '../build/postBlog')),
+    //   timeout: Duration.seconds(30),
+    //   environment: {
+    //     ENV,
+    //   },
+    // });
+
+    // postLambda.addToRolePolicy(postLambdaPolicy);
+
+    // itemResource.addMethod(
+    //   'POST',
+    //   new apigateway.LambdaIntegration(postLambda)
+    // );
 
     new dynamodb.Table(this, tableName, {
+      tableName,
       partitionKey: { name: 'id', type: dynamodb.AttributeType.STRING },
     });
   }
