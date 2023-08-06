@@ -18,11 +18,11 @@ export class CloudfrontStack extends MNested {
   }
 
   createCloudfront() {
-    const { env, subdomain, domain, certArn } = this.mEnvironment;
+    const { subdomain, domain, certArn } = this.mEnvironment;
 
     const { Bucket, BucketAccessControl, BlockPublicAccess, HttpMethods } = s3;
     const { Distribution, OriginAccessIdentity } = cloudfront;
-    const { S3Origin, RestApiOrigin } = cfOrigins;
+    const { S3Origin } = cfOrigins;
 
     const cert = certificatemanager.Certificate.fromCertificateArn(
       this,
@@ -66,12 +66,6 @@ export class CloudfrontStack extends MNested {
       }
     );
 
-    const domainNames = [`${subdomain}.${domain}`];
-
-    if (env === 'prod') {
-      domainNames.push(domain);
-    }
-
     const dist = new Distribution(this, distName, {
       defaultRootObject: 'index.html',
       defaultBehavior: {
@@ -90,7 +84,7 @@ export class CloudfrontStack extends MNested {
           },
         ],
       },
-      domainNames,
+      domainNames: [`${subdomain}.${domain}`],
       certificate: cert,
     });
 
