@@ -61,26 +61,26 @@ export class ApiStack extends MNested {
       new apigateway.LambdaIntegration(listLambda.function)
     );
 
-    const postLambdaPolicy = new iam.PolicyStatement({
-      effect: iam.Effect.ALLOW,
-      resources: [`arn:aws:dynamodb:us-east-1:654627066109:table/${tableName}`],
-      actions: ['dynamodb:PutItem'],
-    });
+    // const postLambdaPolicy = new iam.PolicyStatement({
+    //   effect: iam.Effect.ALLOW,
+    //   resources: [`arn:aws:dynamodb:us-east-1:654627066109:table/${tableName}`],
+    //   actions: ['dynamodb:PutItem'],
+    // });
 
-    const postLambda = new MFunction(this, `${this.getName('postBlog')}-fn`, {
-      mEnvironment: {
-        ...this.mEnvironment,
-        name: 'postBlog',
-        options: {
-          policies: [postLambdaPolicy],
-        },
-      },
-    });
+    // const postLambda = new MFunction(this, `${this.getName('postBlog')}-fn`, {
+    //   mEnvironment: {
+    //     ...this.mEnvironment,
+    //     name: 'postBlog',
+    //     options: {
+    //       policies: [postLambdaPolicy],
+    //     },
+    //   },
+    // });
 
-    itemResource.addMethod(
-      'POST',
-      new apigateway.LambdaIntegration(postLambda.function)
-    );
+    // itemResource.addMethod(
+    //   'POST',
+    //   new apigateway.LambdaIntegration(postLambda.function)
+    // );
 
     return { api: blogApi };
   }
