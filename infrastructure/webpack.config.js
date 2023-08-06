@@ -8,6 +8,7 @@ module.exports = {
     getBlog: path.resolve(SRC_DIR, 'functions/getBlog'),
     listBlogs: path.resolve(SRC_DIR, 'functions/listBlogs'),
     postBlog: path.resolve(SRC_DIR, 'functions/postBlog'),
+    'origin-request': path.resolve(SRC_DIR, 'functions/origin-request'),
   },
   output: {
     path: OUT_DIR,
@@ -32,7 +33,7 @@ module.exports = {
               [
                 '@babel/preset-env',
                 {
-                  targets: { node: '14' },
+                  targets: { node: '18' },
                   modules: false,
                 },
               ],

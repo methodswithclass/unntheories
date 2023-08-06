@@ -1,14 +1,14 @@
 import React from 'react';
-import { useLoaderData } from 'react-router-dom';
-import Header from '../components/header/Header';
-import Footer from '../components/footer/Footer';
-import * as u from '../services/utility.service';
-import * as data from '../services/data.service';
+import { useParams } from 'react-router-dom';
+import Header from 'app/components/header/Header';
+import Footer from 'app/components/footer/Footer';
+import { checkMobile, getMonth } from 'app/utils/utils';
+import { useGetBlog } from 'app/services/data.service';
 
-export const loader = async ({ params }) => {
-  const blog = await data.getBlogByName(params.blog);
+const getDateString = (date) => {
+  const [year, month, day] = date.split('-');
 
-  return blog;
+  return `${getMonth(parseInt(month) - 1)} ${parseInt(day)}, ${year}`;
 };
 
 const ParagraphType = (props) => {
@@ -41,29 +41,26 @@ const ListType = (props) => {
   );
 };
 
-const ParagraphComponent = (props) => {
+const Paragraph = (props) => {
   const { paragraph } = props;
-  const getParaType = () => {
-    if (paragraph.para == 'para') {
-      return <ParagraphType text={paragraph.text} />;
-    } else if ((paragraph.para = 'list')) {
-      return <ListType text={paragraph.text} />;
-    }
-  };
 
   return (
     <div className="relative width">
-      {getParaType()}
+      {paragraph.para == 'para' ? (
+        <ParagraphType text={paragraph.text} />
+      ) : (
+        <ListType text={paragraph.text} />
+      )}
       <div className="relative width height-30 white-back"></div>
     </div>
   );
 };
 
-const SectionComponent = (props) => {
+const Section = (props) => {
   const { text: section } = props;
 
   const allParagraphs = section.map((paragraph, index) => {
-    return <ParagraphComponent key={index} paragraph={paragraph} />;
+    return <Paragraph key={index} paragraph={paragraph} />;
   });
 
   return (
@@ -74,29 +71,17 @@ const SectionComponent = (props) => {
   );
 };
 
-const TextComponent = (props) => {
-  const { content: sections, widths } = props;
+const Body = (props) => {
+  const { content: sections, width } = props;
 
   const sectionElements = sections.map((section, index) => {
-    return <SectionComponent key={index} text={section} />;
+    return <Section key={index} text={section} />;
   });
 
-  return (
-    <div className={`relative hcenter ${widths.body}`}>{sectionElements}</div>
-  );
+  return <div className={`relative hcenter ${width}`}>{sectionElements}</div>;
 };
 
-const TitleComponent = (props) => {
-  const getDateString = (date) => {
-    const [year, month, day] = date.split('-');
-
-    const getMonth = () => {
-      return u.getMonth(parseInt(month) - 1);
-    };
-
-    return `${getMonth()} ${parseInt(day)}, ${year}`;
-  };
-
+const Title = (props) => {
   const { content: blog } = props;
 
   const dateString = getDateString(blog.date);
@@ -116,29 +101,31 @@ const TitleComponent = (props) => {
 };
 
 const Piece = () => {
-  const blog = useLoaderData();
+  const { blog: name } = useParams();
 
-  const isMobile = u.checkMobile();
+  const isMobile = checkMobile();
 
-  const widths = { body: isMobile ? 'width' : 'width60' };
+  const blog = useGetBlog(name);
 
-  if (!blog?.blog) {
+  const width = isMobile ? 'width' : 'width60';
+
+  if (!blog) {
     return null;
   }
 
   return (
     <div className="relative width height cutoffX">
-      <Header title={blog.title} img={blog.image} state={blog.id}></Header>
+      <Header title={blog.title} img={blog.image} state={blog.name}></Header>
       <div className="relative width">
         <div className="relative width white-back">
           <div className="relative width padding-v-100">
             <div className="relative width80 font-15 line-height-30 hcenter">
               <div className="relative width padding-v-50">
-                <TitleComponent content={blog} />
+                <Title content={blog} />
               </div>
 
               <div className="relative width paddinv-v-50">
-                <TextComponent content={blog.blog} widths={widths} />
+                <Body content={blog.blog} width={width} />
               </div>
             </div>
           </div>

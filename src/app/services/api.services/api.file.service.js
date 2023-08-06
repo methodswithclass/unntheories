@@ -1,18 +1,7 @@
 import * as http from './api.client';
 
-export let postBlog = (name, blog) => {
-  return Promise.resolve('nothing done');
-};
+export const getBlogfromFile = (file) => {
+  const filePath = `/asset/files/${file}`;
 
-export let getBlog = (url) => {
-  //   console.log('url', url);
-  let fileName = url.replace('file/', '');
-  fileName = fileName.replace('.txt', '');
-  return http.get({
-    url: `/api/file/${fileName}`,
-  });
-};
-
-export let getAllBlogs = () => {
-  return Promise.resolve('nothing done');
+  return http.get({ url: filePath }).then((res) => res.data);
 };

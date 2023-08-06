@@ -1,5 +1,4 @@
 import * as api from './api.service';
-import axios from 'axios';
 
 const clean = (string) => {
   return string
@@ -36,20 +35,14 @@ const make = (string) => {
   return blog;
 };
 
-export const getBlog = (options) => {
-  // console.log("get api for blog", options.blog.meta.name);
+// export const getBlog = async (options) => {
+//   console.log('get api for blog', options.blog.meta.name);
 
-  return api
-    .getBlog(options.blog.file)
-    .then((res) => {
-      // console.log("data", options.blog.meta.name);
-      return res.data.blog;
-    })
-    .then((data) => {
-      options.blog.content = data;
-      return make(clean(data));
-    });
-};
+//   const blog = await api.getBlog(options.blog.file);
+
+//   options.blog.content = blog;
+//   return make(clean(blog));
+// };
 
 export const makeBlog = (blog) => {
   const { content } = blog;
@@ -58,25 +51,16 @@ export const makeBlog = (blog) => {
   return blog;
 };
 
-const postBlog = (name, blog) => {
-  return api.postBlog(name, blog);
-};
+export const process = async (blog) => {
+  const name = blog.name;
 
-export const process = (blog) => {
-  const url = `/api/${blog.file}`;
-  const name = blog.id;
+  const data = await api.getBlogFromFile(blog.file);
 
-  axios({
-    method: 'get',
-    url,
-  }).then((response) => {
-    // console.log('debug res', response);
-    blog.content = response.data.blog;
-    delete blog.file;
-    delete blog.published;
+  console.log('debug res', data);
+  blog.content = data;
+  delete blog.file;
 
-    postBlog(name, blog).then((res) => {
-      console.log('post blog', res.data);
-    });
-  });
+  const res = await api.postBlog(name, blog);
+
+  console.log('post blog', res.data);
 };

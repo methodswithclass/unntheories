@@ -1,48 +1,37 @@
-import AWS from 'aws-sdk';
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
+import { DynamoDBDocumentClient, QueryCommand } from '@aws-sdk/lib-dynamodb';
 import { response } from '../utils/response-util';
 
 const handler = async (event, context) => {
   console.log('debug event', event);
 
-  const db = new AWS.DynamoDB.DocumentClient();
+  const dbClient = DynamoDBDocumentClient.from(new DynamoDBClient());
 
-  const { ENV } = process.env;
+  const { env, appName } = process.env;
 
-  const queries = [{ genre: 'blogs' }, { genre: 'poetry' }];
+  const TableName = `${env}-${appName}-table`;
 
   try {
-    const promises = queries.map(async (query) => {
-      const { genre } = query;
+    const input = {
+      TableName,
+      KeyConditionExpression: 'pk = :pk',
+      ExpressionAttributeValues: {
+        ':pk': '0',
+      },
+      ExpressionAttributeNames: {
+        '#name': 'name',
+        '#date': 'date',
+        '#by': 'by',
+      },
+      ProjectionExpression:
+        '#date,genre,image,#name,published,title,#by,content,description',
+    };
 
-      const params = {
-        TableName: `${ENV}-blogs-table`,
-        ScanFilter: {
-          genre: {
-            AttributeValueList: [genre],
-            ComparisonOperator: 'EQ',
-          },
-        },
-      };
+    const command = new QueryCommand(input);
 
-      const result = await db.scan(params).promise();
-      const { Items: blogs } = result;
+    const items = await dbClient.send(command).then((res) => res.Items);
 
-      return {
-        genre,
-        blogs,
-      };
-    });
-
-    const results = await Promise.all(promises);
-
-    const resultObj = results.reduce((accum, item) => {
-      return {
-        ...accum,
-        [item.genre]: item.blogs,
-      };
-    }, {});
-
-    return response(resultObj);
+    return response({ blogs: items || [] });
   } catch (error) {
     console.error('error listing blogs', error.message);
     throw error;
