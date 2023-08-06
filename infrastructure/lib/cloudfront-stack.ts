@@ -18,7 +18,7 @@ export class CloudfrontStack extends MNested {
   }
 
   createCloudfront() {
-    const { env, subdomain, domain, api, certArn } = this.mEnvironment;
+    const { env, subdomain, domain, certArn } = this.mEnvironment;
 
     const { Bucket, BucketAccessControl, BlockPublicAccess, HttpMethods } = s3;
     const { Distribution, OriginAccessIdentity } = cloudfront;
@@ -89,50 +89,6 @@ export class CloudfrontStack extends MNested {
             functionVersion: originRequestLambda.function.currentVersion,
           },
         ],
-      },
-      additionalBehaviors: {
-        '/api/*': {
-          origin: new RestApiOrigin(api, {
-            originId: this.getName('api-origin'),
-          }),
-          viewerProtocolPolicy:
-            cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-          allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
-          cachePolicy: new cloudfront.CachePolicy(this, 'cachePolicy', {
-            headerBehavior: cloudfront.CacheHeaderBehavior.none(),
-            cookieBehavior: cloudfront.CacheCookieBehavior.none(),
-            queryStringBehavior: cloudfront.CacheQueryStringBehavior.none(),
-          }),
-          originRequestPolicy: new cloudfront.OriginRequestPolicy(
-            this,
-            'origin-request',
-            {
-              headerBehavior: cloudfront.OriginRequestHeaderBehavior.none(),
-              cookieBehavior: cloudfront.OriginRequestCookieBehavior.all(),
-              queryStringBehavior:
-                cloudfront.OriginRequestQueryStringBehavior.all(),
-            }
-          ),
-          edgeLambdas: [
-            {
-              eventType: cloudfront.LambdaEdgeEventType.ORIGIN_REQUEST,
-              functionVersion: originRequestLambda.function.currentVersion,
-            },
-          ],
-          //   responseHeadersPolicy: new cloudfront.ResponseHeadersPolicy(
-          //     this,
-          //     'response-policy',
-          //     {
-          //       corsBehavior: {
-          //         accessControlAllowCredentials: false,
-          //         accessControlAllowHeaders: ['*'],
-          //         accessControlAllowMethods: ['GET', 'POST', 'OPTIONS'],
-          //         accessControlAllowOrigins: allowedOrigins,
-          //         originOverride: true,
-          //       },
-          //     }
-          //   ),
-        },
       },
       domainNames,
       certificate: cert,

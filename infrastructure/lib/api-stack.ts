@@ -46,22 +46,6 @@ export class ApiStack extends MNested {
       },
     });
 
-    const getLambdaPolicy = new iam.PolicyStatement({
-      effect: iam.Effect.ALLOW,
-      resources: [`arn:aws:dynamodb:us-east-1:654627066109:table/${tableName}`],
-      actions: ['dynamodb:GetItem'],
-    });
-
-    const getLambda = new MFunction(this, `${this.getName('getBlog')}-fn`, {
-      mEnvironment: {
-        ...this.mEnvironment,
-        name: 'getBlog',
-        options: {
-          policies: [getLambdaPolicy],
-        },
-      },
-    });
-
     const blogApi = new apigateway.RestApi(this, apiName, {
       defaultCorsPreflightOptions: {
         allowOrigins: apigateway.Cors.ALL_ORIGINS,
@@ -75,11 +59,6 @@ export class ApiStack extends MNested {
     itemsResource.addMethod(
       'GET',
       new apigateway.LambdaIntegration(listLambda.function)
-    );
-
-    itemResource.addMethod(
-      'GET',
-      new apigateway.LambdaIntegration(getLambda.function)
     );
 
     const postLambdaPolicy = new iam.PolicyStatement({
