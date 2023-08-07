@@ -5,7 +5,7 @@ const Blogbtn = (props) => {
   const { blog } = props;
 
   return (
-    <Link to={`blogs/${blog.id}`}>
+    <Link to={`blogs/${blog?.name}`}>
       <div className="relative width height-200 hcenter margin-v-50 rounded20 border raised cutoff">
         <div className="relative width height black-back pointer rounded20 cutoff">
           {blog ? (
@@ -13,11 +13,11 @@ const Blogbtn = (props) => {
               <div
                 className="absolute black-back center"
                 style={{ width: '120%', height: '500%' }}
-                id={'genre_thumb' + blog.id}
+                id={`genre_thumb${blog.name}`}
               >
                 <img
                   className="absolute width-auto height center"
-                  src={blog.image + '.jpg'}
+                  src={`/asset/${blog.image}.jpg`}
                 />
               </div>
 

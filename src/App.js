@@ -1,28 +1,30 @@
-import React from 'react';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { BrowserRouter } from 'react-router-dom';
+import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 import ErrorBoundary from './app/components/error/ErrorBoundary';
+import Routes from './app/routes';
+import { overrideConsole } from './app/utils/utils';
 import './styles/index.scss';
-import Home, { loader as homeLoader } from './app/states/Home';
-import Piece, { loader as pieceLoader } from './app/states/Piece';
 
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <Home />,
-    loader: homeLoader,
-  },
-  {
-    path: 'blogs/:blog',
-    element: <Piece />,
-    loader: pieceLoader,
-  },
-]);
+const queryClient = new QueryClient({
+  defaultOptions: { queries: { staleTime: 1000 * 60 * 15 } },
+});
 
 const App = () => {
+  const { REACT_APP_ENV: env } = process.env;
+  useEffect(() => {
+    if (env !== 'local') {
+      overrideConsole();
+    }
+  }, []);
   return (
     <div className="museo">
       <ErrorBoundary>
-        <RouterProvider router={router} />
+        <BrowserRouter>
+          <QueryClientProvider client={queryClient}>
+            <Routes />
+          </QueryClientProvider>
+        </BrowserRouter>
       </ErrorBoundary>
     </div>
   );

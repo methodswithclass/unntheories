@@ -1,15 +1,17 @@
 import React from 'react';
-import NavBtn from '../navbtn/Navbtn';
-import ButtonGroup from '../common/ButtonGroup';
-import * as u from '../../services/utility.service';
+import NavBtn from 'app/components/navbtn/Navbtn';
+import ButtonGroup from 'app/components/common/ButtonGroup';
+import { checkMobile, makeTitle } from 'app/utils/utils';
 
 const pageTitle = 'unnecessary theories';
 
 const showDisplayButtons = false;
 
+const SRC_DIR = '';
+
 const Header = (props) => {
   const { state, img, title, button } = props;
-  const isMobile = u.checkMobile();
+  const isMobile = checkMobile();
   return (
     <div className="relative width">
       {state === 'home' ? (
@@ -19,12 +21,12 @@ const Header = (props) => {
               className={`absolute ${
                 isMobile ? 'width-auto height' : 'width height-auto'
               } opacity70`}
-              src="img/evolution_chalk.jpg"
+              src={`/asset/img/evolution_chalk.jpg`}
               id="banner"
             />
             <div className="absolute width90 height90 center">
               <div className="absolute width height text-right font-90 dearjoe">
-                {u.makeTitle(
+                {makeTitle(
                   "here are some theories, <br><br>they're probably unnecessary",
                   '<br>'
                 )}
@@ -66,7 +68,7 @@ const Header = (props) => {
               className={`absolute ${
                 isMobile ? 'width-auto height' : 'width height-auto'
               }`}
-              src={`/${img}.jpg`}
+              src={`/asset/${img}.jpg`}
               id="banner"
             />
           </div>

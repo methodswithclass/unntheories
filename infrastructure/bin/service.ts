@@ -2,17 +2,25 @@
 import 'source-map-support/register';
 import { App } from 'aws-cdk-lib';
 import { BlogStack } from '../lib/main-stack';
-import { MStackProps } from '../lib/patterns/interface-patterns';
+import { MStackProps } from '../lib/patterns';
 
 const app = new App();
 
-const ENV = app.node.tryGetContext('ENV');
+const env = app.node.tryGetContext('env');
+const appName = app.node.tryGetContext('appName');
+const subdomain = app.node.tryGetContext('subdomain');
+const domain = app.node.tryGetContext('domain');
+const certArn = app.node.tryGetContext('certArn');
 
 const mEnvironment = {
-  ENV,
+  env,
+  appName,
+  subdomain,
+  domain,
+  certArn,
 };
 
-new BlogStack(app, `${ENV}-blog-stack`, {
+new BlogStack(app, `${env}-${appName}-stack`, {
   env: {
     account: process.env.CDK_DEFAULT_ACCOUNT,
     region: process.env.CDK_DEFAULT_REGION,

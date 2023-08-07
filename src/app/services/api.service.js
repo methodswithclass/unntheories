@@ -1,13 +1,18 @@
 import * as api from './api.services/api.http.service';
+import * as file from './api.services/api.file.service';
 
-export let postBlog = (name, blog) => {
+export const postBlog = (name, blog) => {
   return api.postBlog(name, blog);
 };
 
-export let getBlog = (blog) => {
-  return api.getBlog(blog);
+export const getBlog = (name) => {
+  return api.getBlog(name);
 };
 
-export let getAllBlogs = () => {
-  return api.getAllBlogs();
+export const listBlogs = () => {
+  return api.listBlogs();
+};
+
+export const getBlogFromFile = (name) => {
+  return file.getBlogfromFile(name);
 };

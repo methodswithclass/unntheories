@@ -1,26 +1,28 @@
 import * as http from './api.client';
 
-export let postBlog = (name, blog) => {
+const url = process.env.REACT_APP_URL;
+
+export const postBlog = (name, blog) => {
   return http.post({
-    url: `/api/blogs/${name}`,
+    url: `${url}/blogs/${name}`,
     data: { blog },
   });
 };
 
-export let getBlog = (blog) => {
+export const getBlog = (name) => {
   return http
     .get({
-      url: `/api/blogs/${blog}`,
+      url: `${url}/blogs/${name}`,
     })
     .then((res) => {
       return res.data.blog;
     });
 };
 
-export let getAllBlogs = () => {
+export const listBlogs = () => {
   return http
     .get({
-      url: '/api/blogs',
+      url: `${url}/blogs`,
     })
     .then((res) => {
       return res.data.blogs;
