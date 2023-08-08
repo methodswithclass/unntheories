@@ -55,12 +55,13 @@ export class ApiStack extends MNested {
     });
     const apiResource = blogApi.root.addResource('api');
     const itemsResource = apiResource.addResource('blogs');
-    const itemResource = itemsResource.addResource('{blog}');
 
     itemsResource.addMethod(
       'GET',
       new apigateway.LambdaIntegration(listLambda.function)
     );
+
+    // const itemResource = itemsResource.addResource('{blog}');
 
     // const postLambdaPolicy = new iam.PolicyStatement({
     //   effect: iam.Effect.ALLOW,
