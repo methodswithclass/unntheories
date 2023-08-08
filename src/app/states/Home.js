@@ -45,8 +45,8 @@ const Buttons = (props) => {
 
 const Genres = (props) => {
   const { genres } = props;
-  if (!genres) {
-    return <div className="relative width">no genres</div>;
+  if (!genres || genres.length === 0) {
+    return <div className="relative width">no blogs</div>;
   }
 
   return (
