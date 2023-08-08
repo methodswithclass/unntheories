@@ -10,18 +10,27 @@ export class BlogStack extends MStack {
 
     const tableShortName = 'table';
 
-    new ApiStack(this, this.getName('api-stack'), {
+    const apiStack = new ApiStack(this, this.getName('api-stack'), {
       mEnvironment: {
         ...this.mEnvironment,
         tableShortName,
       },
     });
 
-    new CloudfrontStack(this, this.getName('cloudfront-stack'), {
-      mEnvironment: {
-        ...this.mEnvironment,
-      },
-    });
+    const { api } = apiStack;
+
+    const cloudfrontStack = new CloudfrontStack(
+      this,
+      this.getName('cloudfront-stack'),
+      {
+        mEnvironment: {
+          ...this.mEnvironment,
+          api,
+        },
+      }
+    );
+
+    cloudfrontStack.addDependency(apiStack);
 
     this.createTable(tableShortName);
   }

@@ -18,11 +18,11 @@ export class CloudfrontStack extends MNested {
   }
 
   createCloudfront() {
-    const { subdomain, domain, certArn } = this.mEnvironment;
+    const { subdomain, domain, certArn, api } = this.mEnvironment;
 
     const { Bucket, BucketAccessControl, BlockPublicAccess, HttpMethods } = s3;
     const { Distribution, OriginAccessIdentity } = cloudfront;
-    const { S3Origin } = cfOrigins;
+    const { S3Origin, RestApiOrigin } = cfOrigins;
 
     const cert = certificatemanager.Certificate.fromCertificateArn(
       this,
@@ -33,7 +33,7 @@ export class CloudfrontStack extends MNested {
     const bucketName = this.getName('frontend');
     const distName = this.getName('dist');
 
-    const allowedOrigins = [domain, `*.${domain}`, 'http://localhost:*'];
+    const allowedOrigins = [`*.${domain}`, 'http://localhost:*'];
 
     const cors: s3.CorsRule = {
       allowedMethods: [HttpMethods.GET],
@@ -83,6 +83,31 @@ export class CloudfrontStack extends MNested {
             functionVersion: originRequestLambda.function.currentVersion,
           },
         ],
+      },
+      additionalBehaviors: {
+        '/api/*': {
+          origin: new RestApiOrigin(api, {
+            originId: this.getName('api-origin'),
+          }),
+          viewerProtocolPolicy:
+            cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+          allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
+          cachePolicy: new cloudfront.CachePolicy(this, 'cachePolicy', {
+            headerBehavior: cloudfront.CacheHeaderBehavior.none(),
+            cookieBehavior: cloudfront.CacheCookieBehavior.none(),
+            queryStringBehavior: cloudfront.CacheQueryStringBehavior.none(),
+          }),
+          originRequestPolicy: new cloudfront.OriginRequestPolicy(
+            this,
+            'origin-request',
+            {
+              headerBehavior: cloudfront.OriginRequestHeaderBehavior.none(),
+              cookieBehavior: cloudfront.OriginRequestCookieBehavior.all(),
+              queryStringBehavior:
+                cloudfront.OriginRequestQueryStringBehavior.all(),
+            }
+          ),
+        },
       },
       domainNames: [`${subdomain}.${domain}`],
       certificate: cert,

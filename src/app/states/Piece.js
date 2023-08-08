@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Header from 'app/components/header/Header';
 import Footer from 'app/components/footer/Footer';
@@ -108,6 +108,10 @@ const Piece = () => {
   const blog = useGetBlog(name);
 
   const width = isMobile ? 'width' : 'width60';
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   if (!blog) {
     return null;

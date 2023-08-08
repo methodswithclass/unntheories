@@ -50,6 +50,7 @@ export class ApiStack extends MNested {
       defaultCorsPreflightOptions: {
         allowOrigins: apigateway.Cors.ALL_ORIGINS,
       },
+      endpointTypes: [apigateway.EndpointType.REGIONAL],
       policy: apiPolicy,
     });
     const apiResource = blogApi.root.addResource('api');
