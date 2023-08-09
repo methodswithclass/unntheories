@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 import ErrorBoundary from './app/components/error/ErrorBoundary';
@@ -12,11 +12,9 @@ const queryClient = new QueryClient({
 
 const App = () => {
   const { REACT_APP_ENV: env } = process.env;
-  useEffect(() => {
-    if (env !== 'local') {
-      overrideConsole();
-    }
-  }, []);
+  if (env !== 'local') {
+    overrideConsole();
+  }
   return (
     <div className="museo">
       <ErrorBoundary>
