@@ -32,9 +32,22 @@ const published = {
   evolution: true,
   sexuality: true,
   feast: false,
+  tennis: true,
 };
 
 const allblogs = [
+  {
+    date: '2024-06-01',
+    by: 'Christopher Polito',
+    name: 'tennis',
+    genre: genres.nonFict,
+    title: 'tennis',
+    description:
+      "",
+    image: 'img/tennis',
+    file: 'tennis.txt',
+    published: published.tennis,
+  },
   {
     date: '2019-04-13',
     by: 'Christopher Polito',
