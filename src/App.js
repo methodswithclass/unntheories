@@ -7,7 +7,7 @@ import { overrideConsole } from './app/utils/utils';
 import './styles/index.scss';
 
 const queryClient = new QueryClient({
-  defaultOptions: { queries: { staleTime: 1000 * 60 * 15 } },
+  defaultOptions: { queries: { cacheTime: 0, staleTime: 0 } },
 });
 
 const App = () => {

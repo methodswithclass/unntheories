@@ -37,7 +37,9 @@ const listBlogs = async () => {
   const published = getPublished();
   const results = await api.listBlogs();
 
-  const obj = results.reduce((accum, item) => {
+  const obj = results.sort((a, b) => {
+    return moment(b.date).valueOf() - moment(a.date).valueOf();
+  }).reduce((accum, item) => {
     const { genre } = item;
     let genreObj = accum[genre];
     let blogs = genreObj?.blogs;
