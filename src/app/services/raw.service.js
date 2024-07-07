@@ -37,6 +37,18 @@ const published = {
 
 const allblogs = [
   {
+    date: '2024-07-03',
+    by: 'Christopher Polito',
+    name: 'suns',
+    genre: genres.nonFict,
+    title: 'thousand exploding suns',
+    description:
+      "",
+    image: 'img/suns',
+    file: 'suns.txt',
+    published: published.tennis,
+  },
+  {
     date: '2024-06-01',
     by: 'Christopher Polito',
     name: 'tennis',
