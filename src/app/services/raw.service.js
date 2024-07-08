@@ -33,9 +33,23 @@ const published = {
   sexuality: true,
   feast: false,
   tennis: true,
+  suns: true,
+  choices: true,
 };
 
 const allblogs = [
+  {
+    date: '2024-07-04',
+    by: 'Christopher Polito',
+    name: 'choices',
+    genre: genres.nonFict,
+    title: 'choices',
+    description:
+      "",
+    image: 'img/choices',
+    file: 'choices.txt',
+    published: published.choices,
+  },
   {
     date: '2024-07-03',
     by: 'Christopher Polito',
@@ -46,7 +60,7 @@ const allblogs = [
       "",
     image: 'img/suns',
     file: 'suns.txt',
-    published: published.tennis,
+    published: published.suns,
   },
   {
     date: '2024-06-01',
