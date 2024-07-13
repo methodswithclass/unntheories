@@ -10,7 +10,7 @@ const Buttons = (props) => {
 
   const isMobile = checkMobile();
 
-  const columnClass = isMobile ? 'width90 left5' : 'width80 left20';
+  const columnClass = isMobile ? 'width90 left5' : 'width80 hcenter';
 
   if (!blogs || blogs.length === 0) {
     return (
@@ -58,7 +58,7 @@ const Genres = (props) => {
         return (
           <div key={`${key}`} className={`relative width`}>
             <div className="relative height-80 width border-bottom">
-              <div className="absolute bottom0 font150-rem">{genre.title}</div>
+              <div className="absolute bottom0 font150-rem center">{genre.title}</div>
             </div>
             <div className={`relative width`}>
               <div className="relative width">
@@ -77,7 +77,7 @@ const Home = () => {
 
   const isMobile = checkMobile();
 
-  const mainColumnClass = isMobile ? 'width80 left10' : 'width65 left10';
+  const mainColumnClass = isMobile ? 'width80 left10' : 'width60 hcenter';
 
   if (isLoading) {
     return <div>Loading...</div>;
