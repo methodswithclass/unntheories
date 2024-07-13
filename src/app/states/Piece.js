@@ -128,7 +128,7 @@ const Piece = () => {
                 <Title content={blog} />
               </div>
 
-              <div className="relative width paddinv-v-50">
+              <div className="relative garamond font-20 width paddinv-v-50">
                 <Body content={blog.blog} width={width} />
               </div>
             </div>

@@ -13,7 +13,7 @@ const Footer = () => {
       id="footer"
     >
       <div className="absolute width80 height-30 hcenter bottom-100 text-right white font-20">
-        &copy;{getYear()} powered by Methods with Class, LLC
+        &copy;{getYear()} methods with class
       </div>
     </div>
   );

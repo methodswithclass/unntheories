@@ -5,8 +5,8 @@
     "env": "prod",
     "appName": "blog-infra",
     "subdomain": "www",
-    "domain": "unnecessarytheories.com",
-    "certArn": "arn:aws:acm:us-east-1:654627066109:certificate/1a948279-eb23-4f7f-abf3-59dcd615a51a"
+    "domain": "weightofthestone.com",
+    "certArn": "arn:aws:acm:us-east-1:654627066109:certificate/11315419-f1fe-4644-86d1-a1375af81387"
   }
 }
   
