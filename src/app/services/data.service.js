@@ -80,3 +80,11 @@ export const useGetBlog = (name) => {
   const blog = list.find((item) => item.name === name);
   return blog;
 };
+
+export const rubMcKenziesFeetSoSheMakesNoises = (rubsFeet) => {
+  if (rubsFeet) {
+    return "OOOHHHH"
+  } else {
+    return ":("
+  }
+}
