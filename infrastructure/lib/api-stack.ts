@@ -1,6 +1,10 @@
-import { Construct } from 'constructs';
-import { aws_iam as iam, aws_apigateway as apigateway } from 'aws-cdk-lib';
-import { MStackProps, MNested, MFunction } from './patterns';
+import { Construct } from "constructs";
+import {
+  aws_iam as iam,
+  aws_apigateway as apigateway,
+  Duration,
+} from "aws-cdk-lib";
+import { MStackProps, MNested, MFunction } from "./patterns";
 
 export class ApiStack extends MNested {
   readonly api: apigateway.RestApi;
@@ -8,13 +12,13 @@ export class ApiStack extends MNested {
   constructor(scope: Construct, id: string, props?: MStackProps) {
     super(scope, id, props);
 
-    const { api } = this.createApi('api');
+    const { api } = this.createApi("api");
 
     this.api = api;
   }
 
   createApi(name: string) {
-    const { tableShortName } = this.mEnvironment;
+    const { tableShortName, userPoolId, appClientId } = this.mEnvironment;
 
     const apiName = this.getName(name);
     const tableName = this.getName(tableShortName);
@@ -24,66 +28,97 @@ export class ApiStack extends MNested {
         new iam.PolicyStatement({
           effect: iam.Effect.ALLOW,
           principals: [new iam.AnyPrincipal()],
-          actions: ['execute-api:Invoke'],
+          actions: ["execute-api:Invoke"],
           resources: [`execute-api:/*`],
         }),
       ],
     });
 
-    const listLambdaPolicy = new iam.PolicyStatement({
+    const processLambdaPolicy = new iam.PolicyStatement({
       effect: iam.Effect.ALLOW,
       resources: [`arn:aws:dynamodb:us-east-1:654627066109:table/${tableName}`],
-      actions: ['dynamodb:Query'],
+      actions: ["dynamodb:Query", "dynamodb:PutItem"],
     });
 
-    const listLambda = new MFunction(this, `${this.getName('listBlogs')}-fn`, {
+    const processLambda = new MFunction(this, `${this.getName("process")}-fn`, {
       mEnvironment: {
         ...this.mEnvironment,
-        name: 'listBlogs',
+        name: "process",
         options: {
-          policies: [listLambdaPolicy],
+          policies: [processLambdaPolicy],
         },
       },
     });
 
-    const blogApi = new apigateway.RestApi(this, apiName, {
+    const processAuthLambda = new MFunction(
+      this,
+      `${this.getName("process-auth")}-fn`,
+      {
+        mEnvironment: {
+          ...this.mEnvironment,
+          name: "process-auth",
+          options: {
+            policies: [processLambdaPolicy],
+            environment: {
+              userPoolId,
+              appClientId,
+            },
+          },
+        },
+      }
+    );
+
+    const authLambda = new MFunction(
+      this,
+      `${this.getName("auth-lambda")}-fn`,
+      {
+        mEnvironment: {
+          ...this.mEnvironment,
+          name: "authorizer",
+          options: {
+            environment: {
+              userPoolId,
+              appClientId,
+            },
+          },
+        },
+      }
+    );
+
+    const authorizer = new apigateway.RequestAuthorizer(
+      this,
+      `${this.getName("authorizer")}`,
+      {
+        handler: authLambda.function,
+        identitySources: [apigateway.IdentitySource.header("authorization")],
+        resultsCacheTtl: Duration.seconds(0),
+      }
+    );
+
+    const api = new apigateway.RestApi(this, apiName, {
       defaultCorsPreflightOptions: {
         allowOrigins: apigateway.Cors.ALL_ORIGINS,
       },
       endpointTypes: [apigateway.EndpointType.REGIONAL],
       policy: apiPolicy,
     });
-    const apiResource = blogApi.root.addResource('api');
-    const itemsResource = apiResource.addResource('blogs');
+    const apiResource = api.root.addResource("api");
+    const processResource = apiResource.addResource("process");
+    const processAuthResource = apiResource.addResource("process-auth");
 
-    itemsResource.addMethod(
-      'GET',
-      new apigateway.LambdaIntegration(listLambda.function)
+    processResource.addMethod(
+      "POST",
+      new apigateway.LambdaIntegration(processLambda.function)
     );
 
-    // const itemResource = itemsResource.addResource('{blog}');
+    processAuthResource.addMethod(
+      "POST",
+      new apigateway.LambdaIntegration(processAuthLambda.function),
+      {
+        authorizer: authorizer,
+      }
+    );
 
-    // const postLambdaPolicy = new iam.PolicyStatement({
-    //   effect: iam.Effect.ALLOW,
-    //   resources: [`arn:aws:dynamodb:us-east-1:654627066109:table/${tableName}`],
-    //   actions: ['dynamodb:PutItem'],
-    // });
-
-    // const postLambda = new MFunction(this, `${this.getName('postBlog')}-fn`, {
-    //   mEnvironment: {
-    //     ...this.mEnvironment,
-    //     name: 'postBlog',
-    //     options: {
-    //       policies: [postLambdaPolicy],
-    //     },
-    //   },
-    // });
-
-    // itemResource.addMethod(
-    //   'POST',
-    //   new apigateway.LambdaIntegration(postLambda.function)
-    // );
-
-    return { api: blogApi };
+    return { api };
   }
 }

@@ -1,38 +1,39 @@
-const path = require('path');
+const path = require("path");
 
-const SRC_DIR = path.resolve(__dirname, 'src');
-const OUT_DIR = path.resolve(__dirname, 'build');
+const SRC_DIR = path.resolve(__dirname, "src");
+const OUT_DIR = path.resolve(__dirname, "build");
 
 module.exports = {
   entry: {
-    listBlogs: path.resolve(SRC_DIR, 'functions/listBlogs'),
-    postBlog: path.resolve(SRC_DIR, 'functions/postBlog'),
-    'origin-request': path.resolve(SRC_DIR, 'functions/origin-request'),
+    process: path.resolve(SRC_DIR, "functions/process"),
+    "process-auth": path.resolve(SRC_DIR, "functions/process-auth"),
+    authorizer: path.resolve(SRC_DIR, "functions/authorizer"),
+    "origin-request": path.resolve(SRC_DIR, "functions/origin-request"),
   },
   output: {
     path: OUT_DIR,
-    filename: '[name]/[name].js',
-    library: '[name]',
-    libraryTarget: 'umd',
+    filename: "[name]/[name].js",
+    library: "[name]",
+    libraryTarget: "umd",
   },
-  mode: 'development',
+  mode: "development",
   optimization: {
     minimize: false,
   },
-  target: 'node',
+  target: "node",
   module: {
     rules: [
       {
         test: /\.js$/,
         exclude: /(node_modules|bower_components)/,
         use: {
-          loader: 'babel-loader',
+          loader: "babel-loader",
           options: {
             presets: [
               [
-                '@babel/preset-env',
+                "@babel/preset-env",
                 {
-                  targets: { node: '18' },
+                  targets: { node: "18" },
                   modules: false,
                 },
               ],

@@ -1,18 +1,18 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
 
 const Blogbtn = (props) => {
   const { blog } = props;
 
   return (
-    <Link to={`blogs/${blog?.name}`}>
+    <Link to={`/blogs/${blog?.name}`}>
       <div className="relative width height-300 hcenter margin-v-50 rounded20 border raised cutoff">
         <div className="relative width height black-back pointer rounded20 cutoff">
           {blog ? (
             <>
               <div
                 className="absolute white-back center"
-                style={{ width: '120%', height: '200%' }}
+                style={{ width: "120%", height: "200%" }}
                 id={`genre_thumb${blog.name}`}
               >
                 <img
