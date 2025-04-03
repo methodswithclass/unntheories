@@ -12,7 +12,7 @@ const createBlog = async ({
   date,
   published,
   image,
-  createdBy,
+  userName,
   by,
 }) => {
   console.log("debug creating blog", name);
@@ -31,9 +31,9 @@ const createBlog = async ({
       date,
       published,
       image,
-      createdBy,
+      createdBy: userName,
       createdOn: timestamp,
-      updatedBy: createdBy,
+      updatedBy: userName,
       updatedOn: timestamp,
     },
     ConditionExpression:
