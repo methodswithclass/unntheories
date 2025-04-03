@@ -1,12 +1,12 @@
-import { Construct } from 'constructs';
-import { NestedStack, Stack } from 'aws-cdk-lib';
+import { Construct } from "constructs";
+import { NestedStack, Stack } from "aws-cdk-lib";
 import {
   aws_lambda as lambda,
   aws_iam as iam,
   Duration,
   StackProps,
-} from 'aws-cdk-lib';
-import * as path from 'path';
+} from "aws-cdk-lib";
+import * as path from "path";
 
 export interface MStackProps extends StackProps {
   readonly mEnvironment: {
@@ -66,13 +66,19 @@ export class MFunction extends Construct implements MStackAssetName {
   createLambda() {
     const { env, appName, name, options = {} } = this.mEnvironment;
 
-    const { policies = [], timeout = 30, memory = 128 } = options;
+    const {
+      policies = [],
+      timeout = 30,
+      memory = 128,
+      environment: otherEnv,
+    } = options;
 
     const lambdaFnName = this.getName(name);
 
     const environment = {
       env,
       appName,
+      ...otherEnv,
     };
 
     const lambdaFn = new lambda.Function(this, `${lambdaFnName}-id`, {
@@ -85,7 +91,7 @@ export class MFunction extends Construct implements MStackAssetName {
     });
 
     Object.entries(environment).forEach(([key, value]) => {
-      lambdaFn.addEnvironment(key, value, { removeInEdge: true });
+      lambdaFn.addEnvironment(key, value as string, { removeInEdge: true });
     });
 
     policies.forEach((policy: iam.PolicyStatement) => {

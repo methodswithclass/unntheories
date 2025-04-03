@@ -1,4 +1,6 @@
-import React from 'react';
+import React from "react";
+import { keyOrder } from "./constants";
+import moment from "moment";
 
 const _mobile = false;
 
@@ -18,18 +20,18 @@ export const makeTitle = ($title, string) => {
 
 export var getMonth = function (month) {
   var months = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
   ];
 
   return months[month];
@@ -60,4 +62,24 @@ export const overrideConsole = () => {
     error: () => {},
   };
   window.console = console;
+};
+
+export const validate = (blog) => {
+  const now = moment();
+
+  return (
+    moment(blog.date).milliseconds() < now.milliseconds() && blog.published
+  );
+};
+
+export const keySort = ([a], [b]) => {
+  return keyOrder[a] < keyOrder[b] ? -1 : 1;
+};
+
+export const sortByDate = (a, b) => {
+  return moment(b.date).isBefore(moment(a.date)) ? -1 : 1;
+};
+
+export const sortByGenre = (a, b) => {
+  return a.genre < b.genre ? -1 : 1;
 };

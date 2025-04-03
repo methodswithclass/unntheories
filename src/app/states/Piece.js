@@ -1,12 +1,12 @@
-import React, { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import Header from 'app/components/header/Header';
-import Footer from 'app/components/footer/Footer';
-import { checkMobile, getMonth } from 'app/utils/utils';
-import { useGetBlog } from 'app/services/data.service';
+import React, { useEffect } from "react";
+import { useParams } from "react-router-dom";
+import Header from "app/components/header/Header";
+import Footer from "app/components/footer/Footer";
+import { checkMobile, getMonth } from "app/utils/utils";
+import { useListBlogs } from "app/services/query";
 
 const getDateString = (date) => {
-  const [year, month, day] = date.split('-');
+  const [year, month, day] = date.split("-");
 
   return `${getMonth(parseInt(month) - 1)} ${parseInt(day)}, ${year}`;
 };
@@ -46,7 +46,7 @@ const Paragraph = (props) => {
 
   return (
     <div className="relative width">
-      {paragraph.para == 'para' ? (
+      {paragraph.para == "para" ? (
         <ParagraphType text={paragraph.text} />
       ) : (
         <ListType text={paragraph.text} />
@@ -74,7 +74,7 @@ const Section = (props) => {
 const Body = (props) => {
   const { content: sections, width } = props;
 
-  const sectionElements = sections.map((section, index) => {
+  const sectionElements = sections?.map((section, index) => {
     return <Section key={index} text={section} />;
   });
 
@@ -105,17 +105,19 @@ const Piece = () => {
 
   const isMobile = checkMobile();
 
-  const blog = useGetBlog(name);
+  const { data: blogs, isPending } = useListBlogs();
 
-  const width = isMobile ? 'width' : 'width60';
+  const width = isMobile ? "width" : "width60";
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  if (!blog) {
-    return null;
+  if (isPending) {
+    return "Loading...";
   }
+
+  const blog = blogs.find((item) => item.name === name);
 
   return (
     <div className="relative width height cutoffX">
@@ -127,7 +129,6 @@ const Piece = () => {
               <div className="relative width padding-v-50">
                 <Title content={blog} />
               </div>
-
               <div className="relative garamond font-20 width paddinv-v-50">
                 <Body content={blog.blog} width={width} />
               </div>

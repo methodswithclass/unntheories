@@ -1,0 +1,1 @@
+dotenvx run --env-file=./scripts/$1/.env -- node scripts/createuser.js
