@@ -2,7 +2,7 @@ import Blogbtn from "app/components/navbtn/Blogbtn";
 import Header from "app/components/header/Header";
 import Footer from "app/components/footer/Footer";
 import { useListBlogs } from "app/services/query";
-import { checkMobile, sortByDate } from "app/utils/utils";
+import { checkMobile, validate } from "app/utils/utils";
 
 const Genre = (props) => {
   const { blogs, title } = props;
@@ -59,11 +59,15 @@ const Home = () => {
       >
         <div className="relative width margin-v-50">
           <Genre
-            blogs={data.filter((item) => item.genre === "blogs")}
+            blogs={data
+              .filter(validate)
+              .filter((item) => item.genre === "blogs")}
             title="Writings"
           />
           <Genre
-            blogs={data.filter((item) => item.genre === "poetry")}
+            blogs={data
+              .filter(validate)
+              .filter((item) => item.genre === "poetry")}
             title="Rhymings"
           />
         </div>

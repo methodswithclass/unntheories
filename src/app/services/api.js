@@ -57,13 +57,10 @@ const listBlogsApi = async (input) => {
 export const listBlogs = async (input) => {
   const results = await listBlogsApi(input);
 
-  const sorted = results
-    .sort(sortByDate)
-    .filter(validate)
-    .map((item) => {
-      item.blog = makeBlog(item.content);
-      return item;
-    });
+  const sorted = results.sort(sortByDate).map((item) => {
+    item.blog = makeBlog(item.content);
+    return item;
+  });
 
   return sorted;
 };
