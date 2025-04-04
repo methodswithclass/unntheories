@@ -1,13 +1,14 @@
 import { Flex, Text } from "@chakra-ui/react";
 import { useAuthenticator } from "@aws-amplify/ui-react";
 import { useNavigate } from "react-router-dom";
-import { authGuard } from "app/services/auth";
+import { authGuard, applyTimeout } from "app/services/auth";
 import { useListBlogs } from "app/services/query";
 import NavButton from "app/components/navbtn/NavButton";
 import AdminBlog from "app/components/AdminBlog";
 
 const AdminList = () => {
   authGuard();
+  applyTimeout();
 
   const { signOut } = useAuthenticator();
   const navigate = useNavigate();

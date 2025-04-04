@@ -3,6 +3,7 @@ import Header from "app/components/header/Header";
 import Footer from "app/components/footer/Footer";
 import { useListBlogs } from "app/services/query";
 import { checkMobile, validate } from "app/utils/utils";
+import { applyTimeout } from "app/services/auth";
 
 const Genre = (props) => {
   const { blogs, title } = props;
@@ -40,6 +41,7 @@ const Genre = (props) => {
 };
 
 const Home = () => {
+  applyTimeout();
   const { data, isPending } = useListBlogs();
 
   const isMobile = checkMobile();
