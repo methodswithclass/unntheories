@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Flex, Input, Textarea, Switch } from "@chakra-ui/react";
 import Field from "app/components/Field";
 import NavButton from "app/components/navbtn/NavButton";
-import { authGuard } from "app/services/auth";
+import { authGuard, applyTimeout } from "app/services/auth";
 import { useCreateBlog, useListBlogs, useUpdateBlog } from "app/services/query";
 import { useNavigate, useParams } from "react-router-dom";
 import { keySort } from "app/utils/utils";
@@ -40,6 +40,7 @@ const Component = ({ name, value, onChange }) => {
 
 const AdminView = () => {
   authGuard();
+  applyTimeout();
   const { blog: name } = useParams();
   const navigate = useNavigate();
 

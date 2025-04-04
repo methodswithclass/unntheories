@@ -160,7 +160,6 @@ const LoginListener = (data) => {
     case LoginState.signInFailure:
     case LoginState.signedOut:
     case LoginState.signOut:
-      setState(State.login);
       setStore(loggedInKey, false);
       setLocal(lastLoginKey, null);
       break;
