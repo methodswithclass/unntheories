@@ -12,11 +12,11 @@ const Blogbtn = (props) => {
             <>
               <div
                 className="absolute white-back center"
-                style={{ width: "120%", height: "200%" }}
+                style={{ width: "1000px", height: "120%" }}
                 id={`genre_thumb${blog.name}`}
               >
                 <img
-                  className="absolute width-auto height center opacity60"
+                  className="absolute width height-auto center opacity60"
                   src={`/asset/${blog.image}.jpg`}
                 />
               </div>
