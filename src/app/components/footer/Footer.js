@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 const Footer = () => {
   const getYear = () => {
@@ -13,7 +13,7 @@ const Footer = () => {
       id="footer"
     >
       <div className="absolute width80 height-30 hcenter bottom-100 text-right white font-20">
-        &copy;{getYear()} methods with class
+        &copy;2016-{getYear()} methods with class
       </div>
     </div>
   );
